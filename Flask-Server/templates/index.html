@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLang - Your Gateway to Song Lyrics from Around the World</title>
+    <link href="https://fonts.cdnfonts.com/css/futura-lt" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-white d-flex justify-content-center align-items-center">
+        <div class="text-center">
+            <h1>Experience Music in Every Language</h1>
+            <p>Unlock the stories behind the lyrics with MusicLang.</p>
+            <a href="#features" class="btn btn-outline-light">Explore Now</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="text-center py-5">
+        <div class="container">
+            <h2>What is MusicLang?</h2>
+            <p>At MusicLang, we're passionate about connecting the dots between melodies and the mosaic of world languages. We use state-of-the-art mBERT technology to illuminate the lyrics of your favorite tunes, revealing the linguistic artistry of songs from across the globe.</p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="container text-center py-5">
+        <h2>Explore Our Features</h2>
+        <p>Please <a href="/signin">sign in/register</a> to use our features.</p>
+        <div class="row feature-container">
+            <div class="col-md-4 feature-box feature-box-1">
+                <h3>Seamless Integration</h3>
+                <p>Effortlessly connect with Spotify and YouTube Music to start your journey through song lyrics in any language.</p>
+            </div>
+            <div class="col-md-4 feature-box feature-box-2">
+                <h3>Lyrics Analysis</h3>
+                <p>Our mBERT-powered analysis peels back the layers of language, offering insights into the cultural tapestry of music.</p>
+            </div>
+            <div class="col-md-4 feature-box feature-box-3">
+                <h3>Statistics Display</h3>
+                <p>Delve into insightful statistics presented in a user-friendly manner, providing a comprehensive overview of music's linguistic landscape.</p>
+            </div>
+            <div class="col-md-4 feature-box feature-box-3">
+                <h3>Playlist Creation and Splitting</h3>
+                <p>Experience a seamless journey through music's linguistic landscape as you effortlessly create and organize playlists to suit your mood and taste.</p>
+            </div>
+            <!-- <div class="col-md-4 feature-box">
+                <h3>User-Friendly Interface</h3>
+                <p>An intuitive, streamlined experience awaits, simplifying your exploration of music's linguistic l4ndscape.</p>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Sign In / Register Modal -->
+<div class="modal fade" id="signinModal" tabindex="-1" aria-labelledby="signinModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signinModalLabel">Sign In / Register</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your sign in / register form goes here -->
+                <!-- Example form fields -->
+                <form>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+                    <!-- Add more fields as needed -->
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </form>
+                <!-- End of sign in / register form -->
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Testimonials Section -->
+    
+<!--
+<section id="testimonials" class="text-center py-5 bg-light">
+    <div class="container">
+        <h2>Community Voices</h2>
+        <p>Hear from our users and discover the impact of MusicLang on their musical journey.</p>
+        Testimonials content would be added here
+    </div>
+</section> -->
+<!-- --> 
+
+
+    <!-- Contact Section -->
+    <section id="contact" class="text-center py-5">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <p>We'd love to hear from you. Reach out with questions, feedback, or the melodies that move you.</p>
+            <form>
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Enter Your Email">
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" rows="4" placeholder="Share Your Thoughts"></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline-light">Send</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-4">
+        <p>&copy; 2024 MusicLang. Explore the Symphony of Languages.</p>
+    </footer>
+
+    <!-- Bootstrap Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

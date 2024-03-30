@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - MusicLang</title>
+    <link href="https://fonts.cdnfonts.com/css/futura-lt" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<style>
+    /* You can include additional styles here */
+    
+    #password-strength-status {
+            padding: 5px;
+            color: #000000;
+            display: none; /* Initially hidden */
+        }
+        .strength-weak {
+            color: red;
+        }
+        .strength-medium {
+            color: orange;
+        }
+        .strength-strong {
+            color: green;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+</style>
+<body>
+
+<div class="split-screen">
+    <div class="left-section">
+        <img src="/static/images/Designer (2).png" alt="Music Visualization" class="bg-image">
+    </div>
+    <div class="right-section">
+        <div class="login-container">
+            <!-- Logo Image -->
+            <!-- <img src="/static/images/mainlogo.png" alt="MusicLang Logo" class="logo-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto 20px;"> -->
+            <h2>Register for an Account</h2>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="First Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Last Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" class="form-control" placeholder="Password" required onkeyup="checkPasswordStrength();">
+                    <div id="password-strength-status"></div>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+                    <div id="confirm-password-error" style="display: none; color: red;">Passwords do not match.</div>
+                </div>                
+                <div class="form-group">
+                    <input type="date" class="form-control" placeholder="Date of Birth" required>
+                </div>
+                <button type="submit" class="btn btn-sign-in">Register</button>
+                <div class="d-flex justify-content-center" style="color: black;">
+                    <p>Already have an account? <a href="/signin" style="color: #FF5722;">Sign In</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+function checkPasswordStrength() {
+    let number = /([0-9])/;
+    let alphabets = /([a-zA-Z])/;
+    let special_characters = /([~,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<])/;
+
+    let strength = $("#password").val();
+    let strengthStatus = $('#password-strength-status');
+    if (strength.length < 8) {
+        strengthStatus.removeClass();
+        strengthStatus.addClass('strength-weak');
+        strengthStatus.html('Weak - try making your password longer.');
+    } else {
+        if (strength.match(number) && strength.match(alphabets) && strength.match(special_characters)) {
+            strengthStatus.removeClass();
+            strengthStatus.addClass('strength-strong underline');
+            strengthStatus.html('Strong - great job!');
+        } else if (strength.match(number) && strength.match(alphabets)) {
+            strengthStatus.removeClass();
+            strengthStatus.addClass('strength-medium underline');
+            strengthStatus.html('Medium - add numbers or special characters to strengthen.');
+        } else {
+            strengthStatus.removeClass();
+            strengthStatus.addClass('strength-weak');
+            strengthStatus.html('Weak - try adding a variety of characters.');
+        }
+    }
+
+    strengthStatus.show();
+}
+
+
+$(document).ready(function() {
+    $('#registrationForm').on('submit', function(e) {
+        var password = $('#password').val();
+        var confirmPassword = $('#confirmPassword').val();
+        var confirmPasswordError = $('#confirm-password-error');
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            confirmPasswordError.show();
+            e.preventDefault(); // Prevent form submission
+        } else {
+            confirmPasswordError.hide();
+        }
+    });
+
+    // Additionally, you might want to hide the error message when the user starts to correct the input.
+    $('#confirmPassword').on('keyup', function() {
+        $('#confirm-password-error').hide();
+    });
+});
+
+</script>
+</body>
+</html>
+

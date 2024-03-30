@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - MusicLang</title>
+    <link href="https://fonts.cdnfonts.com/css/futura-lt" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body>
+
+<div class="split-screen">
+    <div class="left-section">
+        <img src="/static/images/Designer (1).png" alt="Music Visualization" class="bg-image">
+    </div>
+    <div class="right-section">
+        <div class="login-container">
+            <!-- Logo Image -->
+                <!-- <img src="/static/images/mainlogo.png" alt="MusicLang Logo" class="logo-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto 20px;"> -->
+            <h2>Login to your Account</h2>
+            <form>
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="checkbox mb-3">
+                    <label>
+                        <input type="checkbox" value="remember-me"> Remember Me
+                    </label>
+                </div>
+                <a href="#" class="forgot-password">Forgot Password?</a>
+                <button type="submit" class="btn btn-sign-in">Login</button>
+                <div class="d-flex justify-content-center" style="color: black;">
+                    <p>Don't have an account? <a href="/register" style="color: #FF5722;">Register</a></p>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

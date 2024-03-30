@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore a wide range of antique items from different eras. Find unique and vintage items including books, clocks, vases, and more.">
+    <meta name="keywords" content="antiques, vintage items, buy antiques, antique market, collectibles">
+    <title>Main Page - Explore Unique Antiques and Vintage Items</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/Logo-removebg.png" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: hsl(217, 54%, 11%);
+            color: white;
+        }
+
+        header {
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f8f8;
+            box-shadow: rgba(209, 201, 201, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        }
+
+        .header-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-logo img {
+            width: 160px;
+            height: auto;
+            margin-right: auto;
+        }
+
+        .profile-dropdown {
+            position: relative;
+            margin-left: auto;
+        }
+
+        .profile-dropdown img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: hsl(216, 50%, 16%);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: hsl(215, 51%, 70%);
+        }
+
+        .show {
+            display: block;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card-container {
+            background-color: hsl(216, 50%, 16%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-image-container img {
+            width: 100%;
+            border-radius: 15px;
+            display: block;
+        }
+
+        .antique-age {
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            padding-top: 1em;
+        }
+
+        .age-label {
+            font-weight: bold;
+            color: white;
+            margin-right: 0.5em;
+        }
+
+        .age-value {
+            color: hsl(215, 51%, 70%);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.25em 0.75em;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 1em;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 10;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-badge-done {
+            background-color: #28a745;
+        }
+
+        .centered-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: white;
+            padding: 40px;
+        }
+
+        .profile-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .buy-button {
+            background-color: hsl(215, 51%, 70%);
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .buy-button:hover {
+            background-color: hsl(215, 51%, 50%);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .buy-button {
+            margin-top: 1em;
+            background-color: hsl(358, 72%, 44%);
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="left-spacer"></div>
+        <div class="header-logo">
+            <a href="/home">
+                <img src="/static/images/Logo-removebg.png">
+            </a>
+        </div>
+        <div class="profile-dropdown">
+            <img src="{{ image_url if image_url else url_for('static', filename='images/avatar.jpg') }}" alt="Profile"
+                onclick="toggleDropdown()">
+            <div id="myDropdown" class="dropdown-content">
+                {% if is_logged_in %}
+                <a href="/profile">Dashboard</a>
+                <a href="/evaluation">Antique Evaluation</a>
+                <a href="/logout">Logout</a>
+                {% else %}
+                <a href="/login">Sign In</a>
+                <a href="/register">Register</a>
+                {% endif %}
+            </div>
+        </div>
+
+    </header>
+
+    <div class="dashboard">
+        <div class="centered-text">
+            <h1>Antique Market</h1>
+        </div>
+        <div class="cards-grid">
+
+
+            <!-- Static Antique 1 -->
+            <div class="card-container">
+                <a href="/" class="hero-image-container">
+                    <img class="hero-image" src="/static/images/OldBooks.png" alt="Default Antique Image">
+                </a>
+                <main class="main-content">
+                    <h1>The Adventures of Sherlock Holmes (1892 Edition)</h1>
+                    <p>A hardcover edition of 'The Adventures of Sherlock Holmes', published in 1892. The cover is dark
+                        green with gold embossed lettering. The pages show signs of aging with slight yellowing and
+                        delicate edges. There are no markings or inscriptions inside the book. The binding remains
+                        intact but shows signs of wear.</p>
+                    <div class="antique-age">
+                        <span class="age-label">Age:</span>
+                        <span class="age-value">100 years</span>
+                    </div>
+                    <a href="/buy-now" class="buy-button">Buy Now</a>
+
+                </main>
+            </div>
+
+            <!-- Static Antique 2 -->
+            <div class="card-container">
+                <a href="/" class="hero-image-container">
+                    <img class="hero-image" src="/static/images/OldCLock.png" alt="Default Antique Image">
+                </a>
+                <main class="main-content">
+                    <h1>Victorian Mantel Clock, Circa 1870</h1>
+                    <p>his is an ornate Victorian mantel clock, approximately 18 inches tall, featuring intricate wood
+                        carvings and brass accents.
+                        The clock face is white with Roman numerals and is encased in glass. The clock mechanism appears
+                        to be original and is still
+                        functional, though it may require tuning for accurate timekeeping. The wood shows some signs of
+                        wear consistent with its age, adding to its antique charm.</p>
+                    <div class="antique-age">
+                        <span class="age-label">Age:</span>
+                        <span class="age-value">150 years</span>
+                    </div>
+                    <a href="/buy-now" class="buy-button">Buy Now</a>
+
+                </main>
+            </div>
+
+            <!-- Static Antique 3 -->
+            <div class="card-container">
+                <a href="/" class="hero-image-container">
+                    <img class="hero-image" src="/static/images/OldVase.png" alt="Default Antique Image">
+                </a>
+                <main class="main-content">
+                    <h1>Ming Dynasty Blue and White Porcelain Vase</h1>
+                    <p> This antique vase is a fine example of Ming Dynasty porcelain craftsmanship. It stands
+                        approximately 14 inches tall and features a classic blue and white design.
+                        The vase is adorned with intricate hand-painted motifs, including floral patterns and
+                        traditional Chinese scenes. There are no visible cracks or chips, and the
+                        vase is in excellent condition considering its age.</p>
+                    <div class="antique-age">
+                        <span class="age-label">Age:</span>
+                        <span class="age-value">500 years</span>
+                    </div>
+                    <a href="/buy-now" class="buy-button">Buy Now</a>
+
+                </main>
+            </div>
+
+
+            <!-- Dynamic Antique Cards -->
+            {% for antique in all_antiques %}
+            {% if antique.status == 'Accepted' %}
+            <div class="card-container">
+                <a href="/" class="hero-image-container">
+                    <img class="hero-image"
+                        src="{{ url_for('static', filename='uploads/evaluation/' + antique.image_url) }}"
+                        alt="Antique Image">
+                </a>
+                <main class="main-content">
+                    <h1>{{ antique.name }}</h1>
+                    <p>{{ antique.description }}</p>
+                    <div class="antique-age">
+                        <span class="age-label">Age:</span>
+                        <span class="age-value">{{ antique.age }} years</span>
+                    </div>
+                    <a href="/buy-now" class="buy-button">Buy Now</a>
+                </main>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+
+
+        </div>
+        <script>
+            function toggleDropdown() {
+                document.getElementById("myDropdown").classList.toggle("show");
+            }
+
+            window.onclick = function (event) {
+                if (!event.target.matches('.profile-dropdown img')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    var i;
+                    for (i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
+                    }
+                }
+            }
+        </script>
+    </div>
+</body>
+
+</html>

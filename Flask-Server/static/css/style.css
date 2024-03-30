@@ -1,0 +1,360 @@
+@import url('https://fonts.cdnfonts.com/css/futura-lt');
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Futura LT', sans-serif;
+    background-color: #121212;
+    color: #E0E0E0;
+        scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Hide scrollbar for WebKit browsers */
+body::-webkit-scrollbar {
+    display: none;
+}
+/* CSS for link */
+a {
+    color: #FF5722; /* Text color */
+    text-decoration: none; /* Remove default underline */
+    position: relative; /* Required for absolute positioning of the pseudo-element */
+}
+
+/* CSS for underline */
+a::after {
+    content: ''; /* Required for pseudo-element */
+    display: block; /* Required for pseudo-element */
+    width: 100%; /* Full width of the link */
+    height: 2px; /* Height of the underline */
+    position: absolute; /* Position the underline absolutely */
+    bottom: 0; /* Place the underline at the bottom of the link */
+    left: 0; /* Align the underline with the link */
+    transition: width 0.3s ease; /* Smooth transition for underline width */
+}
+
+/* Hover effect for underline */
+a:hover::after {
+    width: 0; /* Make the underline disappear on hover */
+    color: #FF5722; /* Text color */
+    text-decoration: none; /* Remove default underline */
+}
+
+/* Override default browser underline for visited links */
+a:visited {
+    color: #FF5722; /* Text color for visited links */
+}
+
+
+.hero-section {
+    background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.7)), url('/static/images/Blurred Image2024.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #FFF;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.hero-section h1 {
+    margin: 0 0 20px;
+    font-size: 4rem;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+    
+}
+
+.hero-section p {
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+}
+
+.hero-section .btn {
+    font-size: 1.2rem;
+    padding: 0.75rem 2rem;
+    border: 2px solid #FF5722;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.hero-section .btn:hover, .hero-section .btn:focus {
+    background-color: #FF5722;
+    color: #FFF;
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.7);
+}
+
+
+
+#about h2{
+    color: #FF5722; /* This is the orange color used elsewhere */
+    font-size: 50px;
+}
+
+
+/* Features Section Enhancements with Color */
+.feature-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 4rem;
+}
+
+.feature-box {
+    background-color: #333; /* Dark background for contrast */
+    color: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: calc(100% - 60px);
+    max-width: 300px;
+    margin: 0 30px;
+    opacity: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-box:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+.feature-box h3 {
+    font-size: 1.5rem;
+    color: #FF5722; /* Orange color for titles */
+    margin-bottom: 0.5rem;
+}
+
+.feature-box p {
+    font-size: 1rem;
+    color: #E0E0E0; /* Light grey for text */
+}
+
+/* Optional: Adding a border left color for more accent */
+.feature-box:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    border-radius: 15px 0 0 15px; /* Rounded corner on the left */
+    background: linear-gradient(#FF5722, #ffa726); /* Gradient border left */
+    opacity: 0.9;
+}
+
+/* ... (the rest of your styles) ... */
+
+
+#contact form {
+    max-width: 500px;
+    margin: auto;
+}
+
+.form-control {
+    background-color: #333;
+    border: 1px solid #333;
+    color: #fff;
+}
+
+.btn-outline-light {
+    border-color: #FF5722;
+    color: #FF5722;
+}
+
+.btn-outline-light:hover {
+    background-color: #FF5722;
+    border-color: #FF5722;
+}
+
+footer {
+    background-color: #121212; /* Match the feature box background color */
+    color: #E0E0E0;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.8rem;
+}
+
+
+
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-section p {
+        font-size: 1rem;
+    }
+
+    .hero-section .btn {
+        font-size: 1rem;
+        padding: 0.5rem 1.5rem;
+    }
+
+    .feature-container {
+        gap: 20px;
+    }
+
+    .feature-box {
+        width: calc(100% - 40px);
+        margin: 20px;
+        padding: 1.5rem;
+    }
+}
+
+
+.split-screen {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.left-section, .right-section {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-section .bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.right-section {
+    background-color: #ffffff; /* Light background for the right section */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem; /* Padding added for alignment */
+}
+
+.login-container {
+    width: 100%; /* Full width for better alignment */
+    max-width: 450px; /* Maximum width for the form */
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow for depth */
+}
+
+.login-container h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.form-group input {
+    height: 45px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background-color: #e7e7e7; /* Lighter input field */
+    border: 1px solid #dddddd;
+    color: #333;
+}
+
+.form-group textarea {
+    /* height: 45px; */
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background-color: #e7e7e7; /* Lighter input field */
+    border: 1px solid #dddddd;
+    color: #333;
+}
+
+.checkbox label {
+    color: #333; /* Darker color for better visibility */
+}
+
+.btn-sign-in {
+    background-color: #FF5722; /* Orange color for the button */
+    color: #fff;
+    border: none; /* Remove border */
+    padding: 0.75rem 2rem; /* Adjust padding as needed */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: block; /* Make the button a block to fill width */
+    width: 50%; /* Button width as needed */
+    border-radius: 25px; /* Large border radius for round edges */
+    transition: background-color 0.2s ease-in-out;
+    text-align: center; /* Center the text in the button */
+    line-height: normal; /* Adjust line height as needed */
+    font-size: 1.2rem; /* Adjust font size as needed */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Soft shadow for depth */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    margin-left: auto; /* Margins for auto will center the button */
+    margin-right: auto; /* Margins for auto will center the button */
+}
+
+.btn-sign-in:hover {
+    background-color: #e64a19; /* Slightly darker shade on hover */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Deeper shadow on hover */
+}
+
+.forgot-password {
+    color: #FF5722; /* Orange color for the forgot password link */
+    text-decoration: none;
+    display: block; /* Make the link block to handle its own space */
+    margin-top: 0.5rem;
+    text-align: right; /* Align the link to the right */
+}
+
+@media (max-width: 768px) {
+    .split-screen {
+        flex-direction: column;
+    }
+
+    .left-section, .right-section {
+        width: 100%;
+    }
+
+    .left-section {
+        order: 2; /* Put the image below the form on small screens */
+    }
+
+    .right-section {
+        order: 1;
+    }
+
+    .login-container {
+        width: 90%;
+        margin-top: -50px; /* Adjust according to your preference */
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* ... (any other enhancements as needed) ... */
+
+
+
+
+#spotify-integration iframe {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+#analysis-step #analyze-btn {
+    font-size: 1.2rem;
+    padding: 0.75rem 2rem;
+    background-color: #FF5722;
+    border: none;
+    border-radius: 50px;
+    transition: background-color 0.3s ease;
+}
+
+#analysis-step #analyze-btn:hover {
+    background-color: #ffa726;
+    color: #FFF;
+}
+
+

@@ -1,0 +1,123 @@
+@import url('https://fonts.cdnfonts.com/css/futura-lt');
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Futura LT', sans-serif;
+    background-color: #121212;
+    color: #E0E0E0;
+}
+
+.split-screen {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.left-section, .right-section {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-section .bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.right-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-color: #ffffff; /* Background color for the right section */
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    border-radius: 10px;
+    box-shadow: 0 0 40px 5px rgba(0, 0, 0, 0.2); /* Subtle box shadow */
+}
+
+.login-container h2 {
+    font-size: 2rem;
+    color: #333; /* Dark color for the title text */
+    margin-bottom: 1rem;
+}
+
+.form-group input {
+    height: 45px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background-color: #ffffff; /* White background for inputs */
+    border: 1px solid #dddddd; /* Grey border for inputs */
+    color: #333; /* Dark color for input text */
+    padding-left: 10px; /* Padding inside the inputs */
+}
+
+.checkbox label {
+    color: #333; /* Dark color for the checkbox label */
+}
+
+.btn-sign-in {
+    background-color: #FF5722; /* Red background for the button */
+    color: #fff; /* White text color for the button */
+    border: none;
+    padding: 0.75rem 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: block;
+    width: 100%; /* Adjusted width for better mobile responsiveness */
+    border-radius: 25px; /* Rounded corners for the button */
+    transition: background-color 0.2s ease-in-out;
+    text-align: center;
+    line-height: normal;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Shadow effect for the button */
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-sign-in:hover {
+    background-color: #e64a19; /* Slightly darker red on hover */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Stronger shadow effect on hover */
+}
+
+.forgot-password {
+    color: #FF5722; /* Red color to match the button */
+    text-decoration: underline; /* Underline to indicate it's a link */
+    display: block;
+    margin-top: 0.5rem;
+    text-align: right; /* Align to the right */
+}
+
+@media (max-width: 768px) {
+    .split-screen {
+        flex-direction: column;
+    }
+
+    .left-section, .right-section {
+        width: 100%;
+    }
+
+    .left-section {
+        order: 2;
+    }
+
+    .right-section {
+        order: 1;
+    }
+
+    .login-container {
+        width: 90%;
+        margin-top: -50px; /* Adjust the margin-top as necessary for your layout */
+    }
+}
