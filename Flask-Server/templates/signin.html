@@ -16,27 +16,31 @@
     </div>
     <div class="right-section">
         <div class="login-container">
-            <!-- Logo Image -->
-                <!-- <img src="/static/images/mainlogo.png" alt="MusicLang Logo" class="logo-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto 20px;"> -->
             <h2>Login to your Account</h2>
-            <form>
+            <form method="post">
+                {{ form.hidden_tag() }}
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Email" required>
+                    {{ form.email.label(class_="form-control-label") }}
+                    {{ form.email(class_="form-control", placeholder="Email") }}
+                    {% if form.email.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.email.errors[0] }}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" required>
+                    {{ form.password.label(class_="form-control-label") }}
+                    {{ form.password(class_="form-control", placeholder="Password") }}
+                    {% if form.password.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.password.errors[0] }}
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="checkbox mb-3">
-                    <label>
-                        <input type="checkbox" value="remember-me"> Remember Me
-                    </label>
-                </div>
-                <a href="#" class="forgot-password">Forgot Password?</a>
                 <button type="submit" class="btn btn-sign-in">Login</button>
                 <div class="d-flex justify-content-center" style="color: black;">
                     <p>Don't have an account? <a href="/register" style="color: #FF5722;">Register</a></p>
                 </div>
-                
             </form>
         </div>
     </div>

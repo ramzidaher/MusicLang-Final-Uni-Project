@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MusicLang</title>
+    <link href="https://fonts.cdnfonts.com/css/futura-lt" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="icon" href="/static/images/favicon.png">
+</head>
+<body>
+
+<!-- Dashboard Header -->
+<header>
+    <div class="logo">
+        <a href="/">
+            <img src="/static/images/logo2.png" alt="MusicLang Logo">
+        </a>
+    </div>
+    
+    <div class="hamburger-menu">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <nav>
+        <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}" alt="Profile Image" class="profile-img">
+        <!-- Dropdown Menu Trigger -->
+        <div class="dropdown">
+            <span class="dropdown-toggle">{{ user.first_name }} {{ user.last_name }}</span>
+            <!-- Dropdown Menu Content -->
+            <div class="dropdown-content">
+                <a href="/settings">Settings</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+</header>
+<!-- Connection Status Messages -->
+<section class="container text-center py-5">
+    {% if not spotify_connected or not youtube_connected %}
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Music Service Connection Required!</h4>
+            <p>You need to connect your music services to fully utilize MusicLang.</p>
+            <hr>
+            <div class="mb-0">
+                {% if not spotify_connected %}
+                    <a href="/connect_spotify" class="btn btn-primary">Connect Spotify</a>
+                {% endif %}
+                {% if not youtube_connected %}
+                    <a href="/connect_youtube" class="btn btn-secondary">Connect YouTube Music</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</section>
+
+<!-- Dashboard Features -->
+<section class="container text-center py-5">
+    <h3 class="mb-4">Your Features</h3>
+    <div class="row">
+        <!-- Feature 1: Lyrics Analysis -->
+        <div class="col-md-4 mb-3">
+            <div class="feature-box">
+                <i class="fas fa-microphone-alt fa-3x"></i>
+                <h4>Lyrics Analysis</h4>
+                <p>Analyze lyrics in various languages and uncover their meanings.</p>
+                <a href="/analyze" class="btn btn-outline-light">Analyze Now</a>
+            </div>
+        </div>
+
+        <!-- Feature 2: Playlist Management -->
+        <div class="col-md-4 mb-3">
+            <div class="feature-box">
+                <i class="fas fa-music fa-3x"></i>
+                <h4>Playlist Management</h4>
+                <p>Create and organize your playlists based on language and mood.</p>
+                <a href="/playlists" class="btn btn-outline-light">Manage Playlists</a>
+            </div>
+        </div>
+
+        <!-- Feature 3: Integration Settings -->
+        <div class="col-md-4 mb-3">
+            <div class="feature-box">
+                <i class="fas fa-cogs fa-3x"></i>
+                <h4>Integration Settings</h4>
+                <p>Connect and manage your Spotify and YouTube Music accounts.</p>
+                <a href="/settings" class="btn btn-outline-light">Integration Settings</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional sections such as Recent Activities, Recommendations, etc., can be added here -->
+
+<!-- Footer -->
+<footer class="text-center py-4">
+    <p>&copy; 2024 MusicLang. Explore the Symphony of Languages.</p>
+</footer>
+
+<!-- Bootstrap Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

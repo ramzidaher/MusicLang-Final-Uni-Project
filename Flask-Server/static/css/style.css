@@ -12,6 +12,14 @@ body, html {
     -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
 
+.standout-heading {
+    color: #EFEFEF; /* Change to the color you want */
+    font-family: 'Futura LT', sans-serif;
+    font-size: 2.5rem;
+    color: #FF5722 !important; /* Text color */
+
+}
+
 /* Hide scrollbar for WebKit browsers */
 body::-webkit-scrollbar {
     display: none;
@@ -357,4 +365,234 @@ footer {
     color: #FFF;
 }
 
+
+header {
+    display: flex;
+    justify-content: space-between; /* Centers items on the main-axis */
+    align-items: center; /* Centers items on the cross-axis */
+    padding: 0.5rem 2%; /* Adjusted padding for spacing */
+    background-color: #121212;
+}
+
+.logo img {
+    height: 80px;
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+nav ul li {
+    margin-left: 25px;
+    padding: 5px 0;
+}
+
+nav ul li a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    font-size: 18px; /* Increased font size */
+}
+
+nav ul li a:hover {
+    color: #ff5722;
+    padding-bottom: 2px;
+}
+
+.profile-img {
+    border-radius: 50%; /* Creates a circle shape */
+    width: 60px; /* Fixed width */
+    height: 60px; /* Fixed height, should be the same as width for a circle */
+    object-fit: cover; /* Ensures the image covers the area without being stretched */
+    overflow: hidden; /* Ensures nothing spills out of the circular boundary */
+}
+
+
+.profile-img:hover {
+    transform: scale(1.1);
+}
+
+/* Dropdown Menu Improvements */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #333; /* Darker background for better contrast */
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    padding: 12px 16px;
+    z-index: 1;
+    min-width: 160px; /* Set minimum width for dropdown */
+    border-radius: 5px; /* Rounded corners for modern look */
+    text-align: left; /* Align text to the left */
+}
+
+.dropdown-content li {
+    padding: 10px 15px; /* Spacing around dropdown items */
+    margin: 5px 0; /* Spacing between dropdown items */
+    border-radius: 5px; /* Rounded corners for each item */
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.dropdown-content li:hover {
+    background-color: #505050; /* Hover effect for dropdown items */
+}
+
+.dropdown-content a {
+    font-size: 16px; /* Increase font size for readability */
+    color: #fff; /* Light text color for contrast */
+}
+
+/* Hover effect for the dropdown button itself */
+.dropdown:hover > a {
+    background-color: #2a2a2a; /* Background color on hover */
+    border-radius: 5px; /* Rounded corners for the button */
+}
+
+/* Dropdown Menu Improvements */
+.dropdown {
+    position: relative; /* This ensures the dropdown is positioned relative to the 'Features' menu item */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block; /* This will display the dropdown when hovering */
+}
+
+.dropdown:hover > a {
+    background-color: #121212; /* Sets the hover background color to match the nav bar */
+    color: #ff5722; /* Sets the hover font color */
+}
+
+
+/* Responsive adjustments for navigation */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logo img {
+        margin-bottom: 10px;
+        height: 35px; /* Adjust for smaller screens */
+    }
+
+    nav {
+        order: 2; /* Make sure navigation is properly ordered */
+    }
+
+    .profile-img {
+        order: 1; /* Profile image comes first */
+        height: 35px; /* Adjust for smaller screens */
+        margin-bottom: 10px; /* Spacing between the image and the navigation */
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul li {
+        margin: 10px 0; /* Adjust spacing */
+    }
+
+    .dropdown-content {
+        text-align: center; /* Center align for mobile dropdown */
+        padding: 0; /* Remove padding for full-width effect */
+    }
+
+    .dropdown-content li {
+        display: block; /* Stack dropdown items vertically on mobile */
+    }
+}
+/* Space between profile image and name, adjusting dropdown trigger styling */
+.profile-img + .dropdown {
+    margin-left: 10px; /* Adjust as needed */
+    cursor: pointer;
+}
+
+/* Style for the dropdown menu content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Style for links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Hover effect for links inside dropdown */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown content on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Optional: Style the dropdown button to fit your site's design */
+.dropdown-toggle {
+    color: #E0E0E0; /* Adjust the color to match the rest of the navigation text */
+    text-decoration: none; /* Removing underline for aesthetics */
+}
+
+
+/* Custom Alert Box */
+.alert-warning {
+    background-color: #333; /* Dark background for contrast */
+    color: #fff; /* White text color */
+    border-radius: 10px; /* Rounded corners */
+    border: none; /* No border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+.alert-heading {
+    color: #FF5722; /* Orange color to match your theme */
+}
+
+/* Horizontal Rule Styling */
+.alert hr {
+    border-top: 1px solid #FF5722; /* Orange divider */
+}
+
+/* Custom Buttons */
+.btn-primary, .btn-secondary {
+    background-color: transparent; /* Transparent background */
+    border: 2px solid #FF5722; /* Orange border */
+    color: #FF5722; /* Orange text */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    margin: 10px; /* Margin for spacing */
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    background-color: #FF5722; /* Orange background on hover */
+    color: #FFF; /* White text on hover */
+}
+
+/* Adjust the button padding and font size if needed */
+.btn-primary, .btn-secondary {
+    padding: 0.5rem 1rem; /* Padding adjustment */
+    font-size: 1rem; /* Font size adjustment */
+}
+
+/* Ensure these styles are included in your main CSS file or within a <style> tag in the head of your dashboard template. */
 

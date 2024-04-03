@@ -8,7 +8,21 @@
     <link href="https://fonts.cdnfonts.com/css/futura-lt" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="icon" href="/static/images/favicon.png">
+
+
 </head>
+
+<style>
+    .hero-section .btn:hover, .hero-section .btn:focus {
+    background-color: #ffa726; /* Lighter orange */
+    color: #FFF;
+    border-color: #ffa726; /* Ensure the border color also changes */
+}
+
+</style>
 
 <body>
 
@@ -25,82 +39,119 @@
     <section id="about" class="text-center py-5">
         <div class="container">
             <h2>What is MusicLang?</h2>
-            <p>At MusicLang, we're passionate about connecting the dots between melodies and the mosaic of world languages. We use state-of-the-art mBERT technology to illuminate the lyrics of your favorite tunes, revealing the linguistic artistry of songs from across the globe.</p>
+            <p>At MusicLang, we're passionate about connecting the dots between melodies and the mosaic of world
+                languages. We use state-of-the-art mBERT technology to illuminate the lyrics of your favorite tunes,
+                revealing the linguistic artistry of songs from across the globe.</p>
         </div>
     </section>
 
+    <!-- stnadout Section -->
+    <section id="standout" class="text-center py-5">
+        <div class="container mt-5">
+            <!-- Title -->
+            <div class="row mb-4">
+                <div class="col">
+                    <h2 class="text-center standout-heading">What Makes Our Service Stand Out?</h2>
+                </div>
+            </div>
+
+            <!-- First row of features -->
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <i class="fas fa-adjust fa-3x"></i>
+                    <h3>Dark Minimalstic Theme </h3>
+                    <p>A nice user freindly UI, with a dark theme pleasing to the eye!</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <i class="fas fa-history fa-3x"></i>
+                    <h3>New on the Market</h3>
+                    <p>Our service is the its first in its market, our enovative approch bring clutre and music
+                        togather.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <i class="fas fa-globe fa-3x"></i>
+                    <h3>Support 99+ Languages</h3>
+                    <p>We support a diverse user base with 99+ languages, with more to come.</p>
+                </div>
+                <div class="row text-center">
+                    <div class="col-md-4 mb-4">
+                        <i class="fas fa-music fa-3x"></i>
+                        <h3>Spotify and YoutubeMusic Integration</h3>
+                        <p>Currently we support the integration of Spotify and YoutubeMusic, with many more music platforms to come.</p>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <i class="fas fa-rocket fa-3x"></i>
+                        <h3>Quick and Easy</h3>
+                        <p>It's super easy to use, just a couple of steps and you're done! Our user-friendly interface ensures that you can navigate through our platform effortlessly, saving you time and hassle.</p>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <i class="fas fa-hand-holding-usd fa-3x"></i>
+                        <h3>FREE</h3>
+                        <p>All of our services are currently free to use! We believe that everyone should have access to the tools and resources they need without worrying about costs.</p>
+                    </div>
+            </div>
+    </section>
     <!-- Features Section -->
     <section id="features" class="container text-center py-5">
         <h2>Explore Our Features</h2>
-        <p>Please <a href="/signin">sign in/register</a> to use our features.</p>
+        <p>Please <a href="/dash">sign in/register</a> to use our features.</p>
         <div class="row feature-container">
             <div class="col-md-4 feature-box feature-box-1">
                 <h3>Seamless Integration</h3>
                 <p>Effortlessly connect with Spotify and YouTube Music to start your journey through song lyrics in any language.</p>
+                <a href="/dash">Learn More</a>
             </div>
             <div class="col-md-4 feature-box feature-box-2">
                 <h3>Lyrics Analysis</h3>
                 <p>Our mBERT-powered analysis peels back the layers of language, offering insights into the cultural tapestry of music.</p>
+                <a href="/dash">Learn More</a>
             </div>
             <div class="col-md-4 feature-box feature-box-3">
                 <h3>Statistics Display</h3>
                 <p>Delve into insightful statistics presented in a user-friendly manner, providing a comprehensive overview of music's linguistic landscape.</p>
+                <a href="/dash">Learn More</a>
             </div>
             <div class="col-md-4 feature-box feature-box-3">
                 <h3>Playlist Creation and Splitting</h3>
                 <p>Experience a seamless journey through music's linguistic landscape as you effortlessly create and organize playlists to suit your mood and taste.</p>
+                <a href="/dash">Learn More</a>
             </div>
-            <!-- <div class="col-md-4 feature-box">
-                <h3>User-Friendly Interface</h3>
-                <p>An intuitive, streamlined experience awaits, simplifying your exploration of music's linguistic l4ndscape.</p>
-            </div> -->
         </div>
     </section>
+    
 
     <!-- Sign In / Register Modal -->
-<div class="modal fade" id="signinModal" tabindex="-1" aria-labelledby="signinModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="signinModalLabel">Sign In / Register</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Your sign in / register form goes here -->
-                <!-- Example form fields -->
-                <form>
-                    <div class="form-group">
-                        <label for="email">Email address</label>
-                        <input type="email" class="form-control" id="email" placeholder="Enter email">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password">
-                    </div>
-                    <!-- Add more fields as needed -->
-                    <button type="submit" class="btn btn-primary">Sign In</button>
-                </form>
-                <!-- End of sign in / register form -->
+    <div class="modal fade" id="signinModal" tabindex="-1" aria-labelledby="signinModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signinModalLabel">Sign In / Register</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your sign in / register form goes here -->
+                    <!-- Example form fields -->
+                    <form>
+                        <div class="form-group">
+                            <label for="email">Email address</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password">
+                        </div>
+                        <!-- Add more fields as needed -->
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                    </form>
+                    <!-- End of sign in / register form -->
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-    <!-- Testimonials Section -->
-    
-<!--
-<section id="testimonials" class="text-center py-5 bg-light">
-    <div class="container">
-        <h2>Community Voices</h2>
-        <p>Hear from our users and discover the impact of MusicLang on their musical journey.</p>
-        Testimonials content would be added here
-    </div>
-</section> -->
-<!-- --> 
-
-
     <!-- Contact Section -->
     <section id="contact" class="text-center py-5">
         <div class="container">
@@ -127,6 +178,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

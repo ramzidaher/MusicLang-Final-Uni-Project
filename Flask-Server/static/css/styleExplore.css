@@ -1,25 +1,38 @@
 @import url('https://fonts.cdnfonts.com/css/futura-lt');
 
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     font-family: 'Futura LT', sans-serif;
     background-color: #121212;
-    color: #E0E0E0;
+    color: #e0e0e0;
+    line-height: 1.6;
 }
 
+/* Enhanced Navigation Bar */
 header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 5%;
-    background-color: #333;
+    justify-content: space-between; /* Centers items on the main-axis */
+    align-items: center; /* Centers items on the cross-axis */
+    padding: 0.5rem 2%; /* Adjusted padding for spacing */
+    background-color: #121212;
 }
 
 .logo img {
-    height: 50px;
+    height: 80px;
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+nav {
+    display: flex;
+    align-items: center;
 }
 
 nav ul {
@@ -27,34 +40,141 @@ nav ul {
     padding: 0;
     display: flex;
     align-items: center;
+    margin: 0;
 }
 
 nav ul li {
-    margin-left: 20px;
-    position: relative;
+    margin-left: 25px;
+    padding: 5px 0;
 }
 
 nav ul li a {
-    color: #E0E0E0;
+    color: #e0e0e0;
     text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    font-size: 18px; /* Increased font size */
+}
+
+nav ul li a:hover {
+    color: #ff5722;
+    padding-bottom: 2px;
 }
 
 .profile-img {
     border-radius: 50%;
     height: 40px;
+    transition: transform 0.3s ease;
 }
 
+.profile-img:hover {
+    transform: scale(1.1);
+}
+
+/* Dropdown Menu Improvements */
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #555;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    background-color: #333; /* Darker background for better contrast */
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     padding: 12px 16px;
     z-index: 1;
+    min-width: 160px; /* Set minimum width for dropdown */
+    border-radius: 5px; /* Rounded corners for modern look */
+    text-align: left; /* Align text to the left */
+}
+
+.dropdown-content li {
+    padding: 10px 15px; /* Spacing around dropdown items */
+    margin: 5px 0; /* Spacing between dropdown items */
+    border-radius: 5px; /* Rounded corners for each item */
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.dropdown-content li:hover {
+    background-color: #505050; /* Hover effect for dropdown items */
+}
+
+.dropdown-content a {
+    font-size: 16px; /* Increase font size for readability */
+    color: #fff; /* Light text color for contrast */
+}
+
+/* Hover effect for the dropdown button itself */
+.dropdown:hover > a {
+    background-color: #2a2a2a; /* Background color on hover */
+    border-radius: 5px; /* Rounded corners for the button */
+}
+
+/* Dropdown Menu Improvements */
+.dropdown {
+    position: relative; /* This ensures the dropdown is positioned relative to the 'Features' menu item */
 }
 
 .dropdown:hover .dropdown-content {
-    display: block;
+    display: block; /* This will display the dropdown when hovering */
+}
+
+.dropdown:hover > a {
+    background-color: #121212; /* Sets the hover background color to match the nav bar */
+    color: #ff5722; /* Sets the hover font color */
+}
+
+
+/* Responsive adjustments for navigation */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logo img {
+        margin-bottom: 10px;
+        height: 35px; /* Adjust for smaller screens */
+    }
+
+    nav {
+        order: 2; /* Make sure navigation is properly ordered */
+    }
+
+    .profile-img {
+        order: 1; /* Profile image comes first */
+        height: 35px; /* Adjust for smaller screens */
+        margin-bottom: 10px; /* Spacing between the image and the navigation */
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul li {
+        margin: 10px 0; /* Adjust spacing */
+    }
+
+    .dropdown-content {
+        text-align: center; /* Center align for mobile dropdown */
+        padding: 0; /* Remove padding for full-width effect */
+    }
+
+    .dropdown-content li {
+        display: block; /* Stack dropdown items vertically on mobile */
+    }
+}
+
+@media (max-height: 700px) {
+    .step-container {
+        height: 70vh;
+    }
+
+    .step {
+        padding: 15px;
+    }
+
+    body,
+    html {
+        font-size: 14px; /* Adjust font size for shorter screens */
+    }
 }
 
 .step-container {
@@ -62,23 +182,31 @@ nav ul li a {
     justify-content: center;
     align-items: center;
     height: 80vh;
+    flex-wrap: wrap;
 }
 
 .step {
-    background-color: #444;
+    width: 30%;
+    margin: auto;
     padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
     border-radius: 10px;
-    width: 200px;
     text-align: center;
-    margin: 0 20px;
+    display: inline-block;
+    min-height: 150px;
+    max-height: 400px;
 }
 
 .arrow {
-    color: #FF5722;
-    font-size: 24px;
+    display: inline-block;
+    width: 5%;
+    text-align: center;
+    vertical-align: top;
 }
 
-select {
+select,
+button {
     padding: 10px;
     background-color: #333;
     color: white;
@@ -88,15 +216,65 @@ select {
 }
 
 button {
-    background-color: #FF5722;
+    background-color: #ff5722;
     color: white;
     border: none;
     padding: 10px 20px;
     margin-top: 20px;
     cursor: pointer;
-    width: 100%;
 }
 
 button:hover {
     background-color: #ffa726;
+}
+
+
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.hamburger-menu .bar {
+    background-color: #e0e0e0;
+    height: 3px;
+    width: 25px;
+    margin: 3px 0;
+    transition: 0.4s;
+}
+
+/* Show the hamburger menu and hide the menu list on smaller screens */
+@media (max-width: 768px) {
+    nav ul {
+        display: none; /* Hide the nav list */
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .hamburger-menu {
+        display: flex; /* Show the hamburger icon */
+    }
+}
+
+/* Styles for when the menu is opened */
+.menu-opened .hamburger-menu .bar:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.menu-opened .hamburger-menu .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-opened .hamburger-menu .bar:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.menu-opened nav ul {
+    display: flex; /* Show the nav list */
 }

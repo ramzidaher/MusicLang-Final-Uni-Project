@@ -37,35 +37,68 @@
     </div>
     <div class="right-section">
         <div class="login-container">
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-success" role="alert">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
             <!-- Logo Image -->
             <!-- <img src="/static/images/mainlogo.png" alt="MusicLang Logo" class="logo-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto 20px;"> -->
             <h2>Register for an Account</h2>
-            <form id="registrationForm">
+            <form id="registrationForm" method="post" action="/register" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="First Name" required>
+                    {{ form.first_name(class_="form-control", placeholder="First Name") }}
+                    {% for error in form.first_name.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Last Name" required>
+                    {{ form.last_name(class_="form-control", placeholder="Last Name") }}
+                    {% for error in form.last_name.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Email" required>
+                    {{ form.email(class_="form-control", placeholder="Email") }}
+                    {% for error in form.email.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
                 </div>
                 <div class="form-group">
-                    <input type="password" id="password" class="form-control" placeholder="Password" required onkeyup="checkPasswordStrength();">
+                    {{ form.password(class_="form-control", id="password", placeholder="Password", onkeyup="checkPasswordStrength();") }}
                     <div id="password-strength-status"></div>
+                    {% for error in form.password.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
                 </div>
                 <div class="form-group">
-                    <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+                    {{ form.confirm_password(class_="form-control", id="confirmPassword", placeholder="Confirm Password") }}
                     <div id="confirm-password-error" style="display: none; color: red;">Passwords do not match.</div>
-                </div>                
+                    {% for error in form.confirm_password.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
                 <div class="form-group">
-                    <input type="date" class="form-control" placeholder="Date of Birth" required>
+                    {{ form.dob(class_="form-control", placeholder="Date of Birth") }}
+                    {% for error in form.dob.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.profile_image(class_="form-control-file") }}
+                    {% for error in form.profile_image.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
                 </div>
                 <button type="submit" class="btn btn-sign-in">Register</button>
                 <div class="d-flex justify-content-center" style="color: black;">
                     <p>Already have an account? <a href="/signin" style="color: #FF5722;">Sign In</a></p>
                 </div>
-            </form>
+            </form>            
         </div>
     </div>
 </div>
