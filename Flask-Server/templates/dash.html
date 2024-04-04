@@ -34,7 +34,10 @@
             <!-- Dropdown Menu Content -->
             <div class="dropdown-content">
                 <a href="/settings">Settings</a>
+                <a href="/spotify_insights">Account Insights</a>
                 <a href="/logout">Logout</a>
+    
+                
             </div>
         </div>
     </nav>
@@ -42,22 +45,16 @@
 </header>
 <!-- Connection Status Messages -->
 <section class="container text-center py-5">
-    {% if not spotify_connected or not youtube_connected %}
+    {% if not spotify_connected %}
         <div class="alert alert-warning" role="alert">
             <h4 class="alert-heading">Music Service Connection Required!</h4>
             <p>You need to connect your music services to fully utilize MusicLang.</p>
             <hr>
-            <div class="mb-0">
-                {% if not spotify_connected %}
-                    <a href="/connect_spotify" class="btn btn-primary">Connect Spotify</a>
-                {% endif %}
-                {% if not youtube_connected %}
-                    <a href="/connect_youtube" class="btn btn-secondary">Connect YouTube Music</a>
-                {% endif %}
-            </div>
+            <a href="/connect_spotify" class="btn btn-primary">Connect Spotify</a>
         </div>
     {% endif %}
 </section>
+
 
 <!-- Dashboard Features -->
 <section class="container text-center py-5">

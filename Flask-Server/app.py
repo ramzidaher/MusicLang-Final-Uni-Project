@@ -26,6 +26,8 @@ from flask import session, redirect, url_for
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 load_dotenv()  # This loads the variables from .env into the environment
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
 
 
@@ -33,20 +35,9 @@ import os
 from flask import Flask, redirect, url_for, session, request, flash
 from spotipy.oauth2 import SpotifyOAuth
 
+
+
 # Now you can safely load environment variables
-sp_client_id = os.environ.get('SPOTIPY_CLIENT_ID')
-sp_client_secret = os.environ.get('SPOTIPY_CLIENT_SECRET')
-sp_redirect_uri = os.environ.get('SPOTIPY_REDIRECT_URI')
-
-print("SPOTIPY_CLIENT_ID:", sp_client_id)
-print("SPOTIPY_CLIENT_SECRET:", sp_client_secret)
-print("SPOTIPY_REDIRECT_URI:", sp_redirect_uri)
-
-spotify_oauth = SpotifyOAuth(client_id=sp_client_id,
-                             client_secret=sp_client_secret,
-                             redirect_uri=sp_redirect_uri,
-                             scope="user-library-read")
-# Rest of your Flask application code follows...
 
 
 
@@ -77,8 +68,7 @@ class User(db.Model):
     # Assuming profile_image_url is a URL to the user's profile image
     # Set nullable=True if you want to allow users without a profile image
     profile_image_url = db.Column(db.String(255), nullable=True)
-    spotify_key = db.Column(db.String(255), nullable=True)
-    youtube_key = db.Column(db.String(255), nullable=True)  # Add this line for YouTube Music
+
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -115,8 +105,8 @@ class LoginForm(FlaskForm):
 class UserOAuth(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    spotify_token = db.Column(db.String(2048), nullable=True)
-    youtube_token = db.Column(db.String(2048), nullable=True)
+    spotify_access_token = db.Column(db.String(2048), nullable=True)
+    spotify_refresh_token = db.Column(db.String(2048), nullable=True)
 
     user = db.relationship('User', backref=db.backref('oauth_credentials', lazy=True))
 
@@ -197,120 +187,115 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('index'))
 
+
 @app.route('/dash')
 def dash():
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
+        user_oauth = UserOAuth.query.filter_by(user_id=user.id).first()
+        spotify_connected = user_oauth and user_oauth.spotify_access_token is not None
+
         if user is None:
             # Handle case where user not found
             return redirect(url_for('logout'))
 
-        # Check if Spotify and YouTube Music are connected
-        spotify_connected = user.spotify_key is not None
-        youtube_connected = user.youtube_key is not None
-
-        return render_template('dash.html', user=user, spotify_connected=spotify_connected, youtube_connected=youtube_connected)
+        # Pass the spotify_connected variable to the template
+        return render_template('dash.html', user=user, spotify_connected=spotify_connected)
     return redirect(url_for('signin'))
 
 
 
+def session_cache_path(user_id):
+    return ".cache-" + str(user_id)
+
+
 @app.route('/connect_spotify')
 def connect_spotify():
-    spotify_oauth = SpotifyOAuth(
-        client_id='your_spotify_client_id',
-        client_secret='your_spotify_client_secret',
-        redirect_uri=url_for('spotify_callback', _external=True),
-        scope='user-library-read user-read-email'
-    )
-    auth_url = spotify_oauth.get_authorize_url()
+    if 'user_id' not in session:
+        flash('You must be logged in to connect your Spotify account.')
+        return redirect(url_for('signin'))
+
+    scope = 'user-read-private user-read-email user-top-read user-read-recently-played'
+    oauth_manager = SpotifyOAuth(scope=scope, cache_path=session_cache_path(session['user_id']))
+    auth_url = oauth_manager.get_authorize_url()
     return redirect(auth_url)
 
-@app.route('/connect_spotify_callback')
+
+
+@app.route('/spotify_callback')
 def spotify_callback():
-    code = request.args.get('code')
-    error = request.args.get('error')
+    if 'user_id' not in session:
+        return redirect(url_for('signin'))
 
-    if error:
-        flash(f'Error during Spotify login: {error}')
-        return redirect(url_for('index'))
+    oauth = SpotifyOAuth(cache_path=session_cache_path(session['user_id']))
+    if not oauth:
+        flash("Spotify OAuth setup failed. Please try again.")
+        return redirect(url_for('connect_spotify'))
 
-    if code:
-        spotify_oauth = get_spotify_oauth()  # Ensure you're initializing SpotifyOAuth here if not globally
-        token_info = spotify_oauth.get_access_token(code)
-        if token_info:
-            # Here, you might want to save token_info in the session or a database
-            session['token_info'] = token_info  # Example: Storing the token in the user session
-            flash("Spotify connected successfully.")
+    # Check if we have received the "code" query parameter from Spotify's redirect
+    if request.args.get("code"):
+        token_info = oauth.get_access_token(request.args["code"])
+        if not token_info:
+            flash("Failed to retrieve access token. Please try connecting again.")
+            return redirect(url_for('connect_spotify'))
+
+        user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
+        if not user_oauth:
+            user_oauth = UserOAuth(user_id=session['user_id'])
+            db.session.add(user_oauth)
+
+        # Ensure we have a valid token before proceeding
+        if 'access_token' in token_info and 'refresh_token' in token_info:
+            user_oauth.spotify_access_token = token_info['access_token']
+            user_oauth.spotify_refresh_token = token_info['refresh_token']
+            db.session.commit()
             return redirect(url_for('dash'))
         else:
-            flash("Failed to get the access token from Spotify.")
-            return redirect(url_for('index'))
+            flash("Invalid token data received from Spotify. Please try again.")
+            return redirect(url_for('connect_spotify'))
     else:
-        flash("No code provided by Spotify.")
-        return redirect(url_for('index'))
+        return "Authorization failed with Spotify", 400
 
-def create_youtube_oauth_flow():
-    return Flow.from_client_secrets_file(
-        'client_secrets.json',
-        scopes=['https://www.googleapis.com/auth/youtube.readonly'],
-        redirect_uri=url_for('youtube_callback', _external=True)
-    )
+# Assuming you have set your app's SECRET_KEY and database configurations
 
-# @app.route('/connect_youtube')
-# def connect_youtube():
-#     flow = create_youtube_oauth_flow()
-#     auth_url, state = flow.authorization_url(prompt='consent', include_granted_scopes='true')
-#     session['state'] = state  # Save 'state' in the session or database for validation
-#     return redirect(auth_url)
+@app.route('/spotify_insights')
+def spotify_insights():
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        user_oauth = UserOAuth.query.filter_by(user_id=user.id).first()
+        spotify_connected = user_oauth and user_oauth.spotify_access_token is not None
 
-# @app.route('/connect_youtube_callback')
-# def youtube_callback():
-#     flow = create_youtube_oauth_flow()
-#     flow.fetch_token(authorization_response=request.url)
-#     credentials = flow.credentials
+        if not spotify_connected:
+            return redirect(url_for('connect_spotify'))
 
-#     # Store credentials in the database associated with the current user
-#     user_id = session.get('user_id')
-#     save_youtube_credentials(user_id, credentials.to_json())
+        spotify = spotipy.Spotify(auth=user_oauth.spotify_access_token)
+        user_data = spotify.current_user()
+        followers = user_data['followers']['total']
+        # ... Fetch more data as needed ...
 
-#     return redirect(url_for('dash'))
+        # Assuming you've added the necessary data to spotify_data dictionary
+        spotify_data = {
+            'followers': followers,
+            # ... other Spotify data ...
+        }
 
-
-def save_spotify_credentials(user_id, token_info):
-    # Find existing OAuth entry or create a new one
-    oauth_credentials = UserOAuth.query.filter_by(user_id=user_id).first()
-    if not oauth_credentials:
-        oauth_credentials = UserOAuth(user_id=user_id)
-        db.session.add(oauth_credentials)
-    
-    # Update Spotify token
-    oauth_credentials.spotify_token = token_info  # Assuming you're storing the entire token JSON as a string
-    db.session.commit()
-
-    from flask import current_app, session, url_for
-from spotipy.oauth2 import SpotifyOAuth
-import os
-
-def get_spotify_oauth():
-    return SpotifyOAuth(
-        client_id=os.getenv('SPOTIPY_CLIENT_ID'),
-        client_secret=os.getenv('SPOTIPY_CLIENT_SECRET'),
-        redirect_uri=os.getenv('SPOTIPY_REDIRECT_URI'),
-        scope="user-library-read",
-    )
+        return render_template('spotify_insights.html', user=user, spotify_data=spotify_data,spotify_connected=spotify_connected)
+    return redirect(url_for('signin'))
 
 
 
-# def save_youtube_credentials(user_id, credentials_json):
-#     # Find existing OAuth entry or create a new one
-#     oauth_credentials = UserOAuth.query.filter_by(user_id=user_id).first()
-#     if not oauth_credentials:
-#         oauth_credentials = UserOAuth(user_id=user_id)
-#         db.session.add(oauth_credentials)
-    
-#     # Update YouTube token
-#     oauth_credentials.youtube_token = credentials_json  # Storing the entire credentials JSON
-#     db.session.commit()
+
+
+
+@app.before_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        # Adjusting the query method to align with SQLAlchemy 2.0 guidelines
+        g.user = db.session.query(User).get(user_id)
 
 
 if __name__ == '__main__':
