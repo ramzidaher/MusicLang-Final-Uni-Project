@@ -44,16 +44,15 @@
     
 </header>
 <!-- Connection Status Messages -->
-<section class="container text-center py-5">
-    {% if not spotify_connected %}
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">Music Service Connection Required!</h4>
-            <p>You need to connect your music services to fully utilize MusicLang.</p>
-            <hr>
-            <a href="/connect_spotify" class="btn btn-primary">Connect Spotify</a>
+<!-- Connection Status Messages -->
+<!-- Inside <section class="container text-center py-5"> or where you see fit -->
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <a href="/login/spotify" class="btn btn-primary">Connect to Spotify</a>
         </div>
-    {% endif %}
-</section>
+    </div>
+    
+
 
 
 <!-- Dashboard Features -->
