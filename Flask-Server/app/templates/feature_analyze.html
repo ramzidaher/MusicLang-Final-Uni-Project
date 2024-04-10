@@ -164,29 +164,37 @@
             /* Optional: prevent the container from getting too wide on large screens */
         }
 
-/* Container for the language distribution, making it a flex column */
-.languages {
-    display: flex;
-    flex-direction: row; /* Align children horizontally */
-    flex-wrap: wrap; /* If there are many items, they will wrap to the next line */
-    justify-content: center; /* Center children horizontally in the container */
-    align-items: center; /* Center children vertically in the container */
-    width: 100%;
-}
+        /* Container for the language distribution, making it a flex column */
+        .languages {
+            display: flex;
+            flex-direction: row;
+            /* Align children horizontally */
+            flex-wrap: wrap;
+            /* If there are many items, they will wrap to the next line */
+            justify-content: center;
+            /* Center children horizontally in the container */
+            align-items: center;
+            /* Center children vertically in the container */
+            width: 100%;
+        }
 
-.language {
-    background: #ff5722;
-    color: #121212;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    margin: 5px; /* Adjust margin for spacing around each item */
-    text-align: center;
-    box-sizing: border-box; /* Ensures padding is included in the width */
-    /* You can add max-width or flex-basis to control the width of each language item */
-    flex: 1; /* This will make each .language span take up equal space */
-    min-width: 100px; /* Prevents the items from being too narrow */
-}
+        .language {
+            background: #ff5722;
+            color: #121212;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin: 5px;
+            /* Adjust margin for spacing around each item */
+            text-align: center;
+            box-sizing: border-box;
+            /* Ensures padding is included in the width */
+            /* You can add max-width or flex-basis to control the width of each language item */
+            flex: 1;
+            /* This will make each .language span take up equal space */
+            min-width: 100px;
+            /* Prevents the items from being too narrow */
+        }
 
 
 
@@ -203,16 +211,55 @@
         }
 
         .centered-heading {
-    text-align: center;
-    width: 100%; /* Ensure full width for alignment */
-}
+            text-align: center;
+            width: 100%;
+            /* Ensure full width for alignment */
+        }
 
 
-        .tracks-container ul li, .languages span {
-    /* existing styles */
-    text-align: center; /* This will center-align the text within the list items and spans */
-}
+        .tracks-container ul li,
+        .languages span {
+            /* existing styles */
+            text-align: center;
+            /* This will center-align the text within the list items and spans */
+        }
 
+        .loading-overlay {
+            position: fixed;
+            /* Full-screen */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            /* Black background with opacity */
+            z-index: 1000;
+            /* Ensure it's on top */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            /* Light grey */
+            border-top: 5px solid #3498db;
+            /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -222,7 +269,8 @@
             <img src="/static/images/logo2.png" alt="MusicLang Logo">
         </div>
         <nav>
-            <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}" alt="Profile Image" class="profile-img">
+            <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}"
+                alt="Profile Image" class="profile-img">
             <ul>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Features</a></li>
@@ -240,6 +288,7 @@
                     <option value="{{ playlist.id }}">{{ playlist.name }}</option>
                     {% endfor %}
                 </select>
+                <button id="selectPlaylistButton">Select Playlist</button>
                 <!-- <button id="viewLyricsButton">View Lyrics</button> -->
             </div>
 
@@ -247,11 +296,14 @@
 
             <div class="step" data-step="3">
                 <h2>Analyze</h2>
-                <h2>Analyze</h2>
 
                 <button id="analyzePlaylist">Analyze Playlist</button>
             </div>
         </div>
+        <div id="loadingOverlay" class="loading-overlay" style="display:none;">
+            <div class="loading-spinner"></div>
+        </div>
+
         <div id="tracksContainer" class="tracks-container">
             <!-- Tracks will be listed here by the script below -->
         </div>
@@ -262,30 +314,64 @@
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Handler for fetching playlist tracks
+            const selectPlaylistButton = document.getElementById('selectPlaylistButton');
+            const analyzePlaylistButton = document.getElementById('analyzePlaylist');
             const playlistSelect = document.getElementById('playlistSelect');
-            playlistSelect.addEventListener('change', function () {
-                const playlistId = this.value;
-                fetch(`/api/playlist_tracks/${playlistId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const tracksContainer = document.getElementById('tracksContainer');
-                        tracksContainer.innerHTML = ''; // Clear existing tracks
-                        const list = document.createElement('ul');
-                        data.tracks.forEach(track => {
-                            const li = document.createElement('li');
-                            li.textContent = `${track.name} by ${track.artist}`;
-                            const lyricsButton = document.createElement('button');
-                            lyricsButton.textContent = 'Show Lyrics';
-                            lyricsButton.onclick = () => showLyrics(track.artist, track.name, li);
-                            li.appendChild(lyricsButton);
-                            list.appendChild(li);
+            const tracksContainer = document.getElementById('tracksContainer');
+            const loadingOverlay = document.getElementById('loadingOverlay'); // Cache the loading overlay element for easier access
+
+            let playlistSelected = false;
+
+            selectPlaylistButton.addEventListener('click', () => {
+                const selectedPlaylistId = playlistSelect.value;
+                if (selectedPlaylistId) {
+                    loadingOverlay.style.display = 'flex'; // Show loading screen
+                    fetch(`/api/playlist_tracks/${selectedPlaylistId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            playlistSelected = true;
+                            // Clear existing tracks
+                            tracksContainer.innerHTML = '';
+                            const list = document.createElement('ul');
+                            data.tracks.forEach(track => {
+                                const li = document.createElement('li');
+                                li.textContent = `${track.name} by ${track.artist}`;
+                                const lyricsButton = document.createElement('button');
+                                lyricsButton.textContent = 'Show Lyrics';
+                                lyricsButton.onclick = () => showLyrics(track.artist, track.name, li);
+                                li.appendChild(lyricsButton);
+                                list.appendChild(li);
+                            });
+                            tracksContainer.appendChild(list);
+                        })
+                        .catch(error => console.error('Error fetching playlist tracks:', error))
+                        .finally(() => {
+                            loadingOverlay.style.display = 'none'; // Ensure loading screen is hidden regardless of success or failure
                         });
-                        tracksContainer.appendChild(list);
-                    });
+                }
             });
 
-            // Function to show lyrics
+            analyzePlaylistButton.addEventListener('click', () => {
+                if (!playlistSelected) {
+                    alert('Please select a playlist before analyzing.');
+                    return;
+                }
+                const selectedPlaylistId = playlistSelect.value;
+                if (selectedPlaylistId) {
+                    document.getElementById('loadingOverlay').style.display = 'flex'; // Show loading screen
+                    fetch(`/analyze_playlist_languages/${selectedPlaylistId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displayAnalysisResults(data);
+                            document.getElementById('loadingOverlay').style.display = 'none'; // Hide loading screen
+                        }).catch(error => {
+                            console.error('Error analyzing playlist languages:', error);
+                            document.getElementById('loadingOverlay').style.display = 'none'; // Hide loading screen
+                        });
+                }
+            });
+
+            // Assuming showLyrics function remains unchanged
             function showLyrics(artist, title, trackElement) {
                 fetch(`/api/lyrics?artist=${encodeURIComponent(artist)}&title=${encodeURIComponent(title)}`)
                     .then(response => response.json())
@@ -299,23 +385,6 @@
                         }
                     }).catch(error => console.error('Error fetching lyrics:', error));
             }
-
-            // Handler for analyzing playlist languages
-            const analyzePlaylistButton = document.getElementById('analyzePlaylist');
-            analyzePlaylistButton.addEventListener('click', () => {
-                const selectedPlaylistId = document.getElementById('playlistSelect').value;
-                if (selectedPlaylistId) {
-                    fetch(`/analyze_playlist_languages/${selectedPlaylistId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            displayAnalysisResults(data);
-                        }).catch(error => console.error('Error analyzing playlist languages:', error));
-                } else {
-                    alert('Please select a playlist to analyze.');
-                }
-            });
-
-
 
             function displayAnalysisResults(data) {
                 const tracksContainer = document.getElementById('tracksContainer');
@@ -335,34 +404,30 @@
 
                 // Displaying average language distribution
                 const averageLanguages = data.average_languages;
-        if (averageLanguages) {
-            const languagesContainer = document.createElement('div');
-            languagesContainer.classList.add('languages');
+                if (averageLanguages) {
+                    const languagesContainer = document.createElement('div');
+                    languagesContainer.classList.add('languages');
 
-            const heading = document.createElement('h2');
-            heading.textContent = 'Average Language Distribution in Playlist';
-            heading.className = 'centered-heading';
-            languagesContainer.appendChild(heading);
+                    const heading = document.createElement('h2');
+                    heading.textContent = 'Average Language Distribution in Playlist';
+                    heading.className = 'centered-heading';
+                    languagesContainer.appendChild(heading);
 
-            // Sort the languages by percentage before displaying
-            const sortedLanguages = Object.entries(averageLanguages).sort((a, b) => b[1] - a[1]);
+                    // Sort the languages by percentage before displaying
+                    const sortedLanguages = Object.entries(averageLanguages).sort((a, b) => b[1] - a[1]);
 
-            sortedLanguages.forEach(([lang, percentage]) => {
-                const span = document.createElement('span');
-                span.classList.add('language');
-                span.textContent = `${lang}: ${percentage.toFixed(2)}%`;
-                languagesContainer.appendChild(span);
-            });
+                    sortedLanguages.forEach(([lang, percentage]) => {
+                        const span = document.createElement('span');
+                        span.classList.add('language');
+                        span.textContent = `${lang}: ${percentage.toFixed(2)}%`;
+                        languagesContainer.appendChild(span);
+                    });
 
-            tracksContainer.appendChild(languagesContainer);
-        }
+                    tracksContainer.appendChild(languagesContainer);
+                }
             }
-
-
         });
     </script>
-
-
 </body>
 
 </html>

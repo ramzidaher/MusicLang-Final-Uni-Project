@@ -11,7 +11,7 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    dob = DateField('Date of Birth', format='%Y-%m-%d', validators=[DataRequired()])
+    # dob = DateField('Date of Birth', format='%Y-%m-%d', validators=[DataRequired()])
     profile_image = FileField('Profile Image', validators=[
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])

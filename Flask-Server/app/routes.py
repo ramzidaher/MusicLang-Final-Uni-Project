@@ -460,16 +460,22 @@ def api_playlist_tracks(playlist_id):
     spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
     tracks = []
 
-    # Set the correct maximum limit for saved tracks
-    results = spotify.current_user_saved_tracks(limit=50)
-    tracks.extend([{'name': item['track']['name'], 
-                    'artist': ', '.join(artist['name'] for artist in item['track']['artists'])} 
-                    for item in results['items'] if item['track']])
-    while results['next']:
-        results = spotify.next(results)
-        tracks.extend([{'name': item['track']['name'], 
-                        'artist': ', '.join(artist['name'] for artist in item['track']['artists'])} 
-                        for item in results['items'] if item['track']])
+    if playlist_id == 'saved_tracks':
+        # Fetch user's saved tracks
+        results = spotify.current_user_saved_tracks(limit=50)
+        while results:
+            tracks.extend([{'name': item['track']['name'],
+                            'artist': ', '.join(artist['name'] for artist in item['track']['artists'])}
+                           for item in results['items'] if item['track']])
+            results = spotify.next(results) if results['next'] else None
+    else:
+        # Fetch tracks from a specific playlist
+        results = spotify.playlist_tracks(playlist_id, limit=100)
+        while results:
+            tracks.extend([{'name': item['track']['name'],
+                            'artist': ', '.join(artist['name'] for artist in item['track']['artists'])}
+                           for item in results['items'] if item['track']])
+            results = spotify.next(results) if results['next'] else None
 
     return {'tracks': tracks}
 

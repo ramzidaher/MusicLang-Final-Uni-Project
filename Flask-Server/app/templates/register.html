@@ -84,12 +84,7 @@
                         <div class="alert alert-danger">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <div class="form-group">
-                    {{ form.dob(class_="form-control", placeholder="Date of Birth") }}
-                    {% for error in form.dob.errors %}
-                        <div class="alert alert-danger">{{ error }}</div>
-                    {% endfor %}
-                </div>
+
                 <div class="form-group">
                     {{ form.profile_image(class_="form-control-file") }}
                     {% for error in form.profile_image.errors %}
@@ -164,4 +159,3 @@ $(document).ready(function() {
 </script>
 </body>
 </html>
-
