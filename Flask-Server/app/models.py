@@ -49,9 +49,6 @@ class User(db.Model):
     # Assuming profile_image_url is a URL to the user's profile image
     # Set nullable=True if you want to allow users without a profile image
     profile_image_url = db.Column(db.String(255), nullable=True)
-    spotify_access_token = db.Column(db.String(255))
-    spotify_refresh_token = db.Column(db.String(255))
-    spotify_token_expiry = db.Column(db.DateTime)
 
 
     def set_password(self, password):
@@ -63,4 +60,13 @@ class User(db.Model):
 
     
 
+
+
+class UserOAuth(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    spotify_access_token = db.Column(db.String(2048), nullable=True)
+    spotify_refresh_token = db.Column(db.String(2048), nullable=True)
+
+    user = db.relationship('User', backref=db.backref('oauth_credentials', lazy=True))
 

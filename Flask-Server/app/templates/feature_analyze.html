@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLang - Explore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/favicon.png">
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        /* body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 2%;
+            background-color: #121212;
+        }
+
+        .logo img {
+            height: 80px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+            padding: 5px 0;
+        }
+
+        nav ul li a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            font-size: 18px;
+            font-family: 'Futura LT', sans-serif;
+
+        }
+
+        nav ul li a:hover {
+            color: #ff5722;
+            padding-bottom: 2px;
+        }
+
+        .profile-img {
+            border-radius: 50%;
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.1);
+        } */
+
+        .step-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .step {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            background: #222;
+            border-radius: 10px;
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .arrow {
+            flex-basis: 100%;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+            color: #ff5722;
+        }
+
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: none;
+            background: #333;
+            color: white;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #ff5722;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ffa726;
+        }
+
+        .tracks-container,
+        .languages {
+            margin-top: 20px;
+        }
+
+        .tracks-container ul,
+        .languages {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .tracks-container ul li,
+        .languages span {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            /* Adjust 80px to the height of your header */
+            flex-direction: column;
+            /* This ensures that content in <main> is centered and aligned in order */
+        }
+
+        .tracks-container {
+            width: 90%;
+            /* Optional: define a specific width for the container */
+            max-width: 600px;
+            /* Optional: prevent the container from getting too wide on large screens */
+        }
+
+/* Container for the language distribution, making it a flex column */
+.languages {
+    display: flex;
+    flex-direction: row; /* Align children horizontally */
+    flex-wrap: wrap; /* If there are many items, they will wrap to the next line */
+    justify-content: center; /* Center children horizontally in the container */
+    align-items: center; /* Center children vertically in the container */
+    width: 100%;
+}
+
+.language {
+    background: #ff5722;
+    color: #121212;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin: 5px; /* Adjust margin for spacing around each item */
+    text-align: center;
+    box-sizing: border-box; /* Ensures padding is included in the width */
+    /* You can add max-width or flex-basis to control the width of each language item */
+    flex: 1; /* This will make each .language span take up equal space */
+    min-width: 100px; /* Prevents the items from being too narrow */
+}
+
+
+
+        @media (max-width: 768px) {
+            .step-container {
+                flex-direction: column;
+            }
+
+            .step,
+            .arrow {
+                width: 90%;
+                margin: 10px auto;
+            }
+        }
+
+        .centered-heading {
+    text-align: center;
+    width: 100%; /* Ensure full width for alignment */
+}
+
+
+        .tracks-container ul li, .languages span {
+    /* existing styles */
+    text-align: center; /* This will center-align the text within the list items and spans */
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo2.png" alt="MusicLang Logo">
+        </div>
+        <nav>
+            <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}" alt="Profile Image" class="profile-img">
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="step-container">
+            <div class="step" data-step="2">
+                <h2>Select Playlist</h2>
+                <select id="playlistSelect">
+                    <option>Select your playlist</option>
+                    {% for playlist in playlists %}
+                    <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+                    {% endfor %}
+                </select>
+                <!-- <button id="viewLyricsButton">View Lyrics</button> -->
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step" data-step="3">
+                <h2>Analyze</h2>
+                <h2>Analyze</h2>
+
+                <button id="analyzePlaylist">Analyze Playlist</button>
+            </div>
+        </div>
+        <div id="tracksContainer" class="tracks-container">
+            <!-- Tracks will be listed here by the script below -->
+        </div>
+        <!-- Placeholder for the tracks and lyrics table -->
+        <div id="lyricsTableContainer" style="margin-top: 20px;">
+            <!-- This will be populated with a table of tracks and lyrics -->
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handler for fetching playlist tracks
+            const playlistSelect = document.getElementById('playlistSelect');
+            playlistSelect.addEventListener('change', function () {
+                const playlistId = this.value;
+                fetch(`/api/playlist_tracks/${playlistId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tracksContainer = document.getElementById('tracksContainer');
+                        tracksContainer.innerHTML = ''; // Clear existing tracks
+                        const list = document.createElement('ul');
+                        data.tracks.forEach(track => {
+                            const li = document.createElement('li');
+                            li.textContent = `${track.name} by ${track.artist}`;
+                            const lyricsButton = document.createElement('button');
+                            lyricsButton.textContent = 'Show Lyrics';
+                            lyricsButton.onclick = () => showLyrics(track.artist, track.name, li);
+                            li.appendChild(lyricsButton);
+                            list.appendChild(li);
+                        });
+                        tracksContainer.appendChild(list);
+                    });
+            });
+
+            // Function to show lyrics
+            function showLyrics(artist, title, trackElement) {
+                fetch(`/api/lyrics?artist=${encodeURIComponent(artist)}&title=${encodeURIComponent(title)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.lyrics) {
+                            const lyricsDiv = document.createElement('div');
+                            lyricsDiv.textContent = data.lyrics;
+                            trackElement.appendChild(lyricsDiv);
+                        } else {
+                            alert('Lyrics not found.');
+                        }
+                    }).catch(error => console.error('Error fetching lyrics:', error));
+            }
+
+            // Handler for analyzing playlist languages
+            const analyzePlaylistButton = document.getElementById('analyzePlaylist');
+            analyzePlaylistButton.addEventListener('click', () => {
+                const selectedPlaylistId = document.getElementById('playlistSelect').value;
+                if (selectedPlaylistId) {
+                    fetch(`/analyze_playlist_languages/${selectedPlaylistId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displayAnalysisResults(data);
+                        }).catch(error => console.error('Error analyzing playlist languages:', error));
+                } else {
+                    alert('Please select a playlist to analyze.');
+                }
+            });
+
+
+
+            function displayAnalysisResults(data) {
+                const tracksContainer = document.getElementById('tracksContainer');
+                tracksContainer.innerHTML = ''; // Clear previous content
+
+                // Displaying individual track analysis
+                const analysisResults = data.analysis_results;
+                if (analysisResults.length > 0) {
+                    const list = document.createElement('ul');
+                    analysisResults.forEach(result => {
+                        const li = document.createElement('li');
+                        li.textContent = `${result.track_name} by ${result.artist_name}: ${result.languages.map(lang => `${lang[0]} (${lang[1]}%)`).join(', ')}`;
+                        list.appendChild(li);
+                    });
+                    tracksContainer.appendChild(list);
+                }
+
+                // Displaying average language distribution
+                const averageLanguages = data.average_languages;
+        if (averageLanguages) {
+            const languagesContainer = document.createElement('div');
+            languagesContainer.classList.add('languages');
+
+            const heading = document.createElement('h2');
+            heading.textContent = 'Average Language Distribution in Playlist';
+            heading.className = 'centered-heading';
+            languagesContainer.appendChild(heading);
+
+            // Sort the languages by percentage before displaying
+            const sortedLanguages = Object.entries(averageLanguages).sort((a, b) => b[1] - a[1]);
+
+            sortedLanguages.forEach(([lang, percentage]) => {
+                const span = document.createElement('span');
+                span.classList.add('language');
+                span.textContent = `${lang}: ${percentage.toFixed(2)}%`;
+                languagesContainer.appendChild(span);
+            });
+
+            tracksContainer.appendChild(languagesContainer);
+        }
+            }
+
+
+        });
+    </script>
+
+
+</body>
+
+</html>

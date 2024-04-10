@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlist Lyrics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <!-- Add navigation and logo here -->
+    </header>
+
+    <div class="step-container">
+        {% for song in lyrics_data %}
+            <div class="step">
+                <h3>{{ song.title }} by {{ song.artist }}</h3>
+                <a href="{{ song.url }}" target="_blank">View Lyrics</a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

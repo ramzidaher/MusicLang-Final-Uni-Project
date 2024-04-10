@@ -71,9 +71,10 @@
             <div class="feature-box">
                 <i class="fas fa-list-music fa-3x"></i>
                 <h4>Playlists</h4>
-                <p>{{ spotify_data.playlists }}</p>
+                <p>{{ spotify_data.playlist_count }}</p>
             </div>
         </div>
+        
         
         <!-- Top Artists -->
         <div class="col-md-4 mb-3">
@@ -89,30 +90,7 @@
         </div>
         
         <!-- Top Genres -->
-        <div class="col-md-4 mb-3">
-            <div class="feature-box">
-                <i class="fas fa-music fa-3x"></i>
-                <h4>Top Genres</h4>
-                <ul>
-                    {% for genre in spotify_data.top_genres %}
-                        <li>{{ genre }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        
-        <!-- Recently Played Tracks -->
-        <div class="col-md-4 mb-3">
-            <div class="feature-box">
-                <i class="fas fa-history fa-3x"></i>
-                <h4>Recently Played</h4>
-                <ul>
-                    {% for track in spotify_data.recent_tracks %}
-                        <li>{{ track }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+
     </div>
 </section>
 

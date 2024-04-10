@@ -3,16 +3,12 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from lyricsgenius import Genius
 
-# Spotify credentials (replace these with your actual credentials)
-spotify_client_id = '9ee0338fe3e74fc998cbff50462a3241'
-spotify_client_secret = '37f7c65ea65149a3aa8936663a606152'
+
 
 # Genius access token
-genius_access_token = 'VSGWz90P3LMTwqWyAvPhaM_pwe7wgZBOkpd2yB67JCY9PNRGqesI17HJc0GxsBg-'
+genius_access_token = 'oapCISWxA039oLY7GSl9D6BgUM2l-CcYlQQJPgrYrgieF72fHI7JzwO6jRXgm5_D-'
 
-# Initialize Spotify client
-spotify_auth_manager = SpotifyClientCredentials(client_id=spotify_client_id, client_secret=spotify_client_secret)
-sp = spotipy.Spotify(auth_manager=spotify_auth_manager)
+# Initialize Spotify clien
 
 # Initialize Genius client
 genius = Genius(genius_access_token)
