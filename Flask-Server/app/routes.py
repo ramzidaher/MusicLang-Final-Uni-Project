@@ -201,34 +201,49 @@ def dashboard():
     return redirect(url_for('main.signin'))
 
 
-
 @main.route('/connect_spotify')
 def connect_spotify():
-    """
-    Connect the user's Spotify account.
-
-    This route checks if the user is logged in by verifying the presence of 'user_id' in the session.
-    If the user is logged in, it generates the Spotify OAuth authorization URL and redirects the user
-    to that URL to authorize the application's access to their Spotify account. If the user is not logged
-    in, it flashes a message indicating that the user must be logged in to connect their Spotify account
-    and redirects them to the sign-in page.
-
-    Args:
-        None
-
-    Returns:
-        str: Redirects the user to the Spotify OAuth authorization URL if logged in.
-        str: Redirects the user to the sign-in page if not logged in.
-
-    """
     if 'user_id' not in session:
         flash('You must be logged in to connect your Spotify account.')
         return redirect(url_for('main.signin'))
 
-    scope = 'user-read-private user-read-email user-top-read user-read-recently-played'
+    # In your existing /connect_spotify route
+    scope = "playlist-modify-public playlist-modify-private user-read-private user-read-email"
     oauth_manager = SpotifyOAuth(scope=scope, cache_path=session_cache_path(session['user_id']))
     auth_url = oauth_manager.get_authorize_url()
     return redirect(auth_url)
+
+
+
+
+# @main.route('/connect_spotify')
+# def connect_spotify():
+#     """
+#     Connect the user's Spotify account.
+
+#     This route checks if the user is logged in by verifying the presence of 'user_id' in the session.
+#     If the user is logged in, it generates the Spotify OAuth authorization URL and redirects the user
+#     to that URL to authorize the application's access to their Spotify account. If the user is not logged
+#     in, it flashes a message indicating that the user must be logged in to connect their Spotify account
+#     and redirects them to the sign-in page.
+
+#     Args:
+#         None
+
+#     Returns:
+#         str: Redirects the user to the Spotify OAuth authorization URL if logged in.
+#         str: Redirects the user to the sign-in page if not logged in.
+
+#     """
+#     if 'user_id' not in session:
+#         flash('You must be logged in to connect your Spotify account.')
+#         return redirect(url_for('main.signin'))
+
+#     # Update Spotify OAuth scope to include playlist modification permissions
+#     scope = "playlist-modify-public playlist-modify-private user-read-private user-read-email"
+#     oauth_manager = SpotifyOAuth(scope=scope, cache_path=session_cache_path(session['user_id']))
+#     auth_url = oauth_manager.get_authorize_url()
+#     return redirect(auth_url)
 
 @main.route('/spotify_callback')
 def spotify_callback():
@@ -626,3 +641,85 @@ def analyze_playlist_languages(playlist_id):
         'num_tracks_analyzed': num_tracks_analyzed,
         'average_languages': {lang: percentage for lang, percentage in sorted_average_languages}  # Returning as a dict for easier JSON handling
     })
+
+
+@main.route('/create_language_playlists/<playlist_id>', methods=['GET'])
+def create_language_playlists(playlist_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'User not signed in'}), 401
+
+    user_oauth = UserOAuth.query.filter_by(user_id=user_id).first()
+    if not user_oauth or not user_oauth.spotify_access_token:
+        return jsonify({'error': 'Spotify connection is required.'}), 403
+
+    oauth_manager = SpotifyOAuth(cache_path=session_cache_path(user_id))
+    spotify = spotipy.Spotify(auth_manager=oauth_manager)
+
+    # Token Refresh and Error Handling
+    token_info = oauth_manager.get_cached_token()
+    if oauth_manager.is_token_expired(token_info):
+        token_info = oauth_manager.refresh_access_token(token_info['refresh_token'])
+        spotify.auth = token_info['access_token']
+
+    try:
+        # Retrieve Spotify User ID
+        spotify_user_id = spotify.current_user()['id']
+
+        # Fetching the playlist's tracks
+        tracks_data = spotify.playlist_tracks(playlist_id)
+        
+        # Analyze languages and organize tracks
+        tracks_by_language = {}
+        language_threshold = 0.40  # 40% threshold for language detection
+        for item in tracks_data['items']:
+            track = item['track']
+            track_name = track['name']
+            artist_name = track['artists'][0]['name']
+            lyrics = fetch_lyrics(artist_name, track_name)
+
+            if lyrics:
+                language_results = aggregate_results_from_text(lyrics)
+                for language, percentage in language_results.items():
+                    if percentage >= language_threshold:
+                        if language not in tracks_by_language:
+                            tracks_by_language[language] = []
+                        tracks_by_language[language].append(track['uri'])
+
+        # Create new playlists for each language and add tracks
+        created_playlists = {}
+        for language, track_uris in tracks_by_language.items():
+            playlist_name = f"{language.capitalize()} Songs"
+            new_playlist = spotify.user_playlist_create(spotify_user_id, playlist_name)
+            spotify.playlist_add_items(new_playlist['id'], track_uris)
+            created_playlists[language] = new_playlist['id']
+
+        return jsonify({'message': 'Playlists created successfully', 'playlists': created_playlists})
+
+    except spotipy.SpotifyException as e:
+        if e.http_status == 401:
+            # Redirect to re-authentication
+            return redirect(url_for('reauthenticate_spotify'))
+        elif e.http_status == 403:
+            # Handle insufficient scope
+            flash('Insufficient permissions to access Spotify data')
+            return redirect(url_for('dashboard'))
+        else:
+            # General error handling
+            flash('An error occurred while accessing Spotify')
+            return redirect(url_for('dashboard'))
+
+
+
+
+# Add this route to your Flask application
+@main.route('/reauthenticate_spotify')
+def reauthenticate_spotify():
+    if 'user_id' not in session:
+        flash('You must be logged in to reconnect your Spotify account.')
+        return redirect(url_for('main.signin'))
+
+    scope = "playlist-modify-public playlist-modify-private user-read-private user-read-email"
+    oauth_manager = SpotifyOAuth(scope=scope, cache_path=session_cache_path(session['user_id']))
+    auth_url = oauth_manager.get_authorize_url()
+    return redirect(auth_url)

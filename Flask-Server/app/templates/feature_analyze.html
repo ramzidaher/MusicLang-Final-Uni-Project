@@ -300,6 +300,7 @@
                 <button id="analyzePlaylist">Analyze Playlist</button>
             </div>
         </div>
+        <button id="createLanguagePlaylistsButton">Create Playlists by Language</button>
         <div id="loadingOverlay" class="loading-overlay" style="display:none;">
             <div class="loading-spinner"></div>
         </div>
@@ -386,6 +387,8 @@
                     }).catch(error => console.error('Error fetching lyrics:', error));
             }
 
+
+
             function displayAnalysisResults(data) {
                 const tracksContainer = document.getElementById('tracksContainer');
                 tracksContainer.innerHTML = ''; // Clear previous content
@@ -427,6 +430,29 @@
                 }
             }
         });
+        document.getElementById('createLanguagePlaylistsButton').addEventListener('click', () => {
+        const selectedPlaylistId = document.getElementById('playlistSelect').value;
+        if (selectedPlaylistId) {
+            fetch(`/create_language_playlists/${selectedPlaylistId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data); // Process the response data as needed
+                    alert('Playlists created successfully.');
+                })
+                .catch(error => {
+                    console.error('Error creating language playlists:', error);
+                    alert('Error creating language playlists. Please try again.');
+                });
+        } else {
+            alert('Please select a playlist.');
+        }
+    });
+
     </script>
 </body>
 
