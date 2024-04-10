@@ -703,11 +703,13 @@ def create_language_playlists(playlist_id):
         elif e.http_status == 403:
             # Handle insufficient scope
             flash('Insufficient permissions to access Spotify data')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('main.dashboard'))
         else:
             # General error handling
             flash('An error occurred while accessing Spotify')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('main.dashboard'))
+
+
 
 
 
