@@ -107,28 +107,7 @@ def get_playlist_count(spotify):
 
     return total_playlists_created_by_user
 
-
 def get_playlist_tracks_with_lyrics(user_id, playlist_id):
-    """
-    Fetch tracks of a specified playlist from Spotify.
-
-    This function fetches tracks of a specified playlist from Spotify using the
-    user's OAuth token. If the user has not connected their Spotify account or there's
-    no access token available, it flashes a message indicating that the user needs to
-    connect to Spotify and redirects them to the dashboard.
-
-    If there are errors encountered during fetching, it flashes an error message
-    and redirects the user to the dashboard.
-
-    Args:
-        user_id (int): The ID of the user whose playlist tracks are to be fetched.
-        playlist_id (str): The ID of the playlist whose tracks are to be fetched.
-
-    Returns:d
-        str: Renders the page with the playlist tracks for potential analysis.
-        str: Redirects the user to the dashboard if Spotify connection fails or errors occur during fetching.
-
-    """
     user_oauth = UserOAuth.query.filter_by(user_id=user_id).first()
     if not user_oauth or not user_oauth.spotify_access_token:
         flash('Spotify connection is required.', 'info')
@@ -138,30 +117,96 @@ def get_playlist_tracks_with_lyrics(user_id, playlist_id):
     spotify = spotipy.Spotify(auth_manager=oauth_manager)
 
     try:
+        tracks = []
         if playlist_id == 'saved_tracks':
-            # Fetch liked songs
+            # Fetch liked songs with pagination
             results = spotify.current_user_saved_tracks()
+            while results:
+                tracks.extend([{
+                    'name': item['track']['name'],
+                    'artist': item['track']['artists'][0]['name'],
+                    'lyrics_url': "Dummy Lyrics URL"  # Implement actual lyrics fetching here
+                } for item in results['items'] if item['track']])
+                if results['next']:
+                    results = spotify.next(results)
+                else:
+                    results = None
         else:
             # Fetch tracks from a regular playlist
             results = spotify.playlist_tracks(playlist_id)
+            while results:
+                tracks.extend([{
+                    'name': item['track']['name'],
+                    'artist': item['track']['artists'][0]['name'],
+                    'lyrics_url': "Dummy Lyrics URL"  # Implement actual lyrics fetching here
+                } for item in results['items'] if item['track']])
+                if results['next']:
+                    results = spotify.next(results)
+                else:
+                    results = None
 
-        tracks = [{
-            'name': item['track']['name'],
-            'artist': item['track']['artists'][0]['name'],
-            'lyrics_url': "Dummy Lyrics URL"  # Implement actual lyrics fetching here
-        } for item in results['items'] if item['track']]
-        
         return render_template('feature_analyze.html', tracks=tracks, playlist_id=playlist_id)
 
     except spotipy.exceptions.SpotifyException as e:
         flash(f'Error fetching tracks: {e}', 'error')
         return redirect(url_for('main.dashboard'))
 
-    oauth_manager = SpotifyOAuth(cache_path=session_cache_path(user_id))
-    spotify = spotipy.Spotify(auth_manager=oauth_manager)
-    tracks_data = spotify.playlist_tracks(playlist_id)
-    tracks = [{'name': item['track']['name'], 'artist': item['track']['artists'][0]['name'], 'lyrics_url': "Dummy Lyrics URL"} for item in tracks_data['items']]  # Implement actual lyrics fetching here
-    return render_template('feature_analyze.html', tracks=tracks, playlist_id=playlist_id)
+
+
+# def get_playlist_tracks_with_lyrics(user_id, playlist_id):
+#     """
+#     Fetch tracks of a specified playlist from Spotify.
+
+#     This function fetches tracks of a specified playlist from Spotify using the
+#     user's OAuth token. If the user has not connected their Spotify account or there's
+#     no access token available, it flashes a message indicating that the user needs to
+#     connect to Spotify and redirects them to the dashboard.
+
+#     If there are errors encountered during fetching, it flashes an error message
+#     and redirects the user to the dashboard.
+
+#     Args:
+#         user_id (int): The ID of the user whose playlist tracks are to be fetched.
+#         playlist_id (str): The ID of the playlist whose tracks are to be fetched.
+
+#     Returns:d
+#         str: Renders the page with the playlist tracks for potential analysis.
+#         str: Redirects the user to the dashboard if Spotify connection fails or errors occur during fetching.
+
+#     """
+#     user_oauth = UserOAuth.query.filter_by(user_id=user_id).first()
+#     if not user_oauth or not user_oauth.spotify_access_token:
+#         flash('Spotify connection is required.', 'info')
+#         return redirect(url_for('main.dashboard'))
+
+#     oauth_manager = SpotifyOAuth(cache_path=session_cache_path(user_id))
+#     spotify = spotipy.Spotify(auth_manager=oauth_manager)
+
+#     try:
+#         if playlist_id == 'saved_tracks':
+#             # Fetch liked songs
+#             results = spotify.current_user_saved_tracks()
+#         else:
+#             # Fetch tracks from a regular playlist
+#             results = spotify.playlist_tracks(playlist_id)
+
+#         tracks = [{
+#             'name': item['track']['name'],
+#             'artist': item['track']['artists'][0]['name'],
+#             'lyrics_url': "Dummy Lyrics URL"  # Implement actual lyrics fetching here
+#         } for item in results['items'] if item['track']]
+        
+#         return render_template('feature_analyze.html', tracks=tracks, playlist_id=playlist_id)
+
+#     except spotipy.exceptions.SpotifyException as e:
+#         flash(f'Error fetching tracks: {e}', 'error')
+#         return redirect(url_for('main.dashboard'))
+
+#     oauth_manager = SpotifyOAuth(cache_path=session_cache_path(user_id))
+#     spotify = spotipy.Spotify(auth_manager=oauth_manager)
+#     tracks_data = spotify.playlist_tracks(playlist_id)
+#     tracks = [{'name': item['track']['name'], 'artist': item['track']['artists'][0]['name'], 'lyrics_url': "Dummy Lyrics URL"} for item in tracks_data['items']]  # Implement actual lyrics fetching here
+#     return render_template('feature_analyze.html', tracks=tracks, playlist_id=playlist_id)
 
 
 

@@ -448,8 +448,8 @@ def fetch_user_playlists(user_id):
 
 
 
-@main.route('/api/playlist_tracks/<playlist_id>')
-def api_playlist_tracks(playlist_id):
+# @main.route('/api/playlist_tracks/<playlist_id>')
+# def api_playlist_tracks(playlist_id):
     """
     Retrieve tracks from a Spotify playlist or user's saved tracks.
 
@@ -494,6 +494,43 @@ def api_playlist_tracks(playlist_id):
 
     return {'tracks': tracks}
 
+from spotipy import SpotifyOAuth
+import spotipy
+from flask import session, jsonify
+
+@main.route('/api/playlist_tracks/<playlist_id>')
+def api_playlist_tracks(playlist_id):
+    if 'user_id' not in session:
+        return {'error': 'User not logged in'}, 403
+
+    user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
+    if not user_oauth or not user_oauth.spotify_access_token:
+        return {'error': 'Spotify not connected'}, 403
+
+    spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
+    tracks = []
+
+    if playlist_id == 'saved_tracks':
+        # Fetch user's saved tracks
+        results = spotify.current_user_saved_tracks(limit=50)
+        while results:
+            tracks.extend([{'name': item['track']['name'],
+                            'artist': ', '.join(artist['name'] for artist in item['track']['artists'])}
+                           for item in results['items'] if item['track']])
+            results = spotify.next(results)  # Move to the next page of saved tracks
+
+    else:
+        # Fetch tracks from a specific playlist
+        results = spotify.playlist_tracks(playlist_id, limit=100)
+        while results:
+            tracks.extend([{'name': item['track']['name'],
+                            'artist': ', '.join(artist['name'] for artist in item['track']['artists'])}
+                           for item in results['items'] if item['track']])
+            results = spotify.next(results)  # Move to the next page of playlist tracks
+    
+    
+    print(f"Total tracks fetched: {len(tracks)}")  # Add this line in your api_playlist_tracks function before returning the response.
+    return jsonify({'tracks': tracks})
 
 
 
@@ -725,3 +762,32 @@ def reauthenticate_spotify():
     oauth_manager = SpotifyOAuth(scope=scope, cache_path=session_cache_path(session['user_id']))
     auth_url = oauth_manager.get_authorize_url()
     return redirect(auth_url)
+
+
+@main.route('/api/all_saved_tracks')
+def all_saved_tracks():
+    user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
+    if not user_oauth or not user_oauth.spotify_access_token:
+        return jsonify({'error': 'Spotify connection is required.'}), 403
+
+    spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
+    tracks = []
+    results = spotify.current_user_saved_tracks()
+    while results:
+        try:
+            tracks.extend([{
+                'name': item['track']['name'],
+                'artist': item['track']['artists'][0]['name']
+            } for item in results['items'] if item['track']])
+
+            # Check for more pages
+            if results['next']:
+                results = spotify.next(results)
+            else:
+                results = None
+        except Exception as e:
+            print("Failed to fetch tracks:", str(e))
+            break
+
+    return jsonify({'tracks': tracks})
+

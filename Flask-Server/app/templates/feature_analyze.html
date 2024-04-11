@@ -81,24 +81,54 @@
         .profile-img:hover {
             transform: scale(1.1);
         } */
-
         .step-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-around;
+            align-items: stretch;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin: -10px;
+            /* Compensate for the padding */
         }
 
         .step {
-            flex: 1;
-            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
             padding: 20px;
             background: #222;
             border-radius: 10px;
             color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            flex: 1 0 calc(33.333% - 20px);
+            /* Adjust basis to account for margin */
+            min-height: 250px;
+            /* Set based on the tallest step */
         }
+
+        @media (max-width: 1200px) {
+            .step {
+                flex: 1 0 calc(50% - 20px);
+                /* Half width for medium screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .step-container {
+                justify-content: center;
+                /* Center on small screens */
+                flex-wrap: wrap;
+                /* Allow wrapping on small screens */
+            }
+
+            .step {
+                flex: 1 0 90%;
+                /* Full width on smaller screens */
+            }
+        }
+
+
 
         .arrow {
             flex-basis: 100%;
@@ -280,7 +310,7 @@
     </header>
     <main>
         <div class="step-container">
-            <div class="step" data-step="2">
+            <div class="step" data-step="1">
                 <h2>Select Playlist</h2>
                 <select id="playlistSelect">
                     <option>Select your playlist</option>
@@ -292,17 +322,26 @@
                 <!-- <button id="viewLyricsButton">View Lyrics</button> -->
             </div>
 
-            <div class="arrow">↓</div>
+            <div class="arrow">🢃</div>
 
-            <div class="step" data-step="3">
+            <div class="step" data-step="2">
                 <h2>Analyze</h2>
 
                 <button id="analyzePlaylist">Analyze Playlist</button>
             </div>
+            <div class="arrow">🢃</div>
+
+            <div class="step" data-step="3">
+                <h2>Playlist Creatation and Managment</h2>
+                <button id="createLanguagePlaylistsButton">Create Playlists by Language</button>
+
+            </div>
         </div>
-        <button id="createLanguagePlaylistsButton">Create Playlists by Language</button>
         <div id="loadingOverlay" class="loading-overlay" style="display:none;">
             <div class="loading-spinner"></div>
+        </div>
+        <div id="songsContainer" class="tracks-container">
+            <!-- Songs will be listed here -->
         </div>
 
         <div id="tracksContainer" class="tracks-container">
@@ -325,15 +364,15 @@
 
             selectPlaylistButton.addEventListener('click', () => {
                 const selectedPlaylistId = playlistSelect.value;
-                if (selectedPlaylistId) {
-                    loadingOverlay.style.display = 'flex'; // Show loading screen
-                    fetch(`/api/playlist_tracks/${selectedPlaylistId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            playlistSelected = true;
-                            // Clear existing tracks
-                            tracksContainer.innerHTML = '';
-                            const list = document.createElement('ul');
+                loadingOverlay.style.display = 'flex'; // Show loading screen
+                fetch(`/api/playlist_tracks/${selectedPlaylistId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Tracks received:', data.tracks);  // Check what is received exactly
+                        playlistSelected = true;
+                        tracksContainer.innerHTML = '';
+                        const list = document.createElement('ul');
+                        if (data.tracks.length > 0) {
                             data.tracks.forEach(track => {
                                 const li = document.createElement('li');
                                 li.textContent = `${track.name} by ${track.artist}`;
@@ -344,13 +383,18 @@
                                 list.appendChild(li);
                             });
                             tracksContainer.appendChild(list);
-                        })
-                        .catch(error => console.error('Error fetching playlist tracks:', error))
-                        .finally(() => {
-                            loadingOverlay.style.display = 'none'; // Ensure loading screen is hidden regardless of success or failure
-                        });
-                }
+                        } else {
+                            console.log('No tracks received.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching playlist tracks:', error);
+                    })
+                    .finally(() => {
+                        loadingOverlay.style.display = 'none'; // Hide loading screen
+                    });
             });
+
 
             analyzePlaylistButton.addEventListener('click', () => {
                 if (!playlistSelected) {
@@ -363,10 +407,13 @@
                     fetch(`/analyze_playlist_languages/${selectedPlaylistId}`)
                         .then(response => response.json())
                         .then(data => {
+                            console.log(selectedPlaylistId)
+                            console.log(data)
                             displayAnalysisResults(data);
                             document.getElementById('loadingOverlay').style.display = 'none'; // Hide loading screen
                         }).catch(error => {
                             console.error('Error analyzing playlist languages:', error);
+                            console.error('Error during DOM manipulation:', error);
                             document.getElementById('loadingOverlay').style.display = 'none'; // Hide loading screen
                         });
                 }
@@ -431,27 +478,31 @@
             }
         });
         document.getElementById('createLanguagePlaylistsButton').addEventListener('click', () => {
-        const selectedPlaylistId = document.getElementById('playlistSelect').value;
-        if (selectedPlaylistId) {
-            fetch(`/create_language_playlists/${selectedPlaylistId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data); // Process the response data as needed
-                    alert('Playlists created successfully.');
-                })
-                .catch(error => {
-                    console.error('Error creating language playlists:', error);
-                    alert('Error creating language playlists. Please try again.');
-                });
-        } else {
-            alert('Please select a playlist.');
-        }
-    });
+            const selectedPlaylistId = document.getElementById('playlistSelect').value;
+            if (selectedPlaylistId) {
+                fetch(`/create_language_playlists/${selectedPlaylistId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data); // Process the response data as needed
+                        alert('Playlists created successfully.');
+                    })
+                    .catch(error => {
+                        console.error('Error creating language playlists:', error);
+                        alert('Error creating language playlists. Please try again.');
+                    });
+            } else {
+                alert('Please select a playlist.');
+            }
+        });
+
+
+
+
 
     </script>
 </body>
