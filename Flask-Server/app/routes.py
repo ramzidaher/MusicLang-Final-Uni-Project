@@ -761,6 +761,11 @@ from flask import jsonify, session
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+
+
+
+from collections import Counter
+
 @main.route('/create_language_playlists/<playlist_id>/<level>', methods=['GET'])
 def create_language_playlists(playlist_id, level):
     if 'user_id' not in session:
@@ -771,11 +776,8 @@ def create_language_playlists(playlist_id, level):
         return jsonify({'error': 'Spotify connection is required.'}), 403
 
     spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
-
-    # Initialize data structure for language-specific tracks
     languages_data = {}
 
-    # Fetch the playlist's tracks and handle pagination
     try:
         results = spotify.playlist_tracks(playlist_id)
         while results:
@@ -784,37 +786,55 @@ def create_language_playlists(playlist_id, level):
                 lyrics = fetch_lyrics(track['artists'][0]['name'], track['name'])
                 if lyrics:
                     language_results = aggregate_results_from_text(lyrics)
+                    # Store track URIs grouped by language
                     for language, percentage in language_results.items():
-                        if percentage >= 0.25:  # Threshold for medium complexity
-                            if language not in languages_data:
-                                languages_data[language] = []
-                            languages_data[language].append(track['uri'])
+                        if language not in languages_data:
+                            languages_data[language] = []
+                        languages_data[language].append((track['uri'], percentage))
 
-            if results['next']:  # Check if there is another page of tracks
-                results = spotify.next(results)
-            else:
-                break
+            results = spotify.next(results) if results['next'] else None
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    # Create playlists based on the analysis level
-    created_playlists = {}
     spotify_user_id = spotify.current_user()['id']
+    created_playlists = {}
+
     if level == 'medium':
-        for lang, uris in languages_data.items():
-            if uris:
-                playlist_name = f"{lang} Songs"
+        threshold = 0.25
+        for language, track_info in languages_data.items():
+            playlist_uris = [uri for uri, percentage in track_info if percentage >= threshold]
+            if playlist_uris:
+                playlist_name = f"{language} Songs - Medium"
                 playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
-                spotify.playlist_add_items(playlist['id'], uris)
-                created_playlists[lang] = playlist['id']
-    elif level == 'low' or level == 'high':
-        # Add handling for 'low' and 'high' complexity levels as needed
-        pass
+                spotify.playlist_add_items(playlist['id'], playlist_uris)
+                created_playlists[language] = playlist['id']
+
+    elif level == 'low':
+        # Combine all tracks into one playlist regardless of language percentage
+        all_tracks = [uri for track_info in languages_data.values() for uri, _ in track_info]
+        if all_tracks:
+            playlist_name = "Other Languages - Low"
+            other_playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
+            spotify.playlist_add_items(other_playlist['id'], all_tracks)
+            created_playlists['Other'] = other_playlist['id']
+
+    elif level == 'high':
+        threshold = 0.75
+        for language, track_info in languages_data.items():
+            playlist_uris = [uri for uri, percentage in track_info if percentage >= threshold]
+            if playlist_uris:
+                playlist_name = f"{language} Songs - High"
+                playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
+                spotify.playlist_add_items(playlist['id'], playlist_uris)
+                created_playlists[language] = playlist['id']
 
     return jsonify({
         'message': 'Playlists created successfully',
         'playlists': created_playlists
     })
+
+
+
 
 
 
@@ -849,10 +869,23 @@ def delete_specific_playlists():
 
     # The names of the playlists you want to delete (based on the image provided)
     playlist_names_to_delete = [
-        "English Songs","Egyptian arabic Songs", "Other Languages Songs", "Arabic Songs", "Egyptian Arabic Songs", "French Songs",
-        "Portuguese Songs", "Italian Songs", "Spanish Songs", "Dutch Songs",
-        "Korean Songs", "German Songs", "Turkish Songs"
+        "English Songs - Low Complexity",     "English Songs", "Egyptian Arabic Songs", "Other Languages Songs", "Arabic Songs",
+    "French Songs", "Portuguese Songs", "Italian Songs", "Spanish Songs", "Dutch Songs",
+    "Korean Songs", "German Songs", "Turkish Songs",
+"English Songs - Medium Complexity", "English Songs - High Complexity",
+        "Egyptian Arabic Songs - Low Complexity", "Egyptian Arabic Songs - Medium Complexity", "Egyptian Arabic Songs - High Complexity",
+        "Other Languages Songs - Low Complexity", "Other Languages Songs - Medium Complexity", "Other Languages Songs - High Complexity",
+        "Arabic Songs - Low Complexity", "Arabic Songs - Medium Complexity", "Arabic Songs - High Complexity",
+        "French Songs - Low Complexity", "French Songs - Medium Complexity", "French Songs - High Complexity",
+        "Portuguese Songs - Low Complexity", "Portuguese Songs - Medium Complexity", "Portuguese Songs - High Complexity",
+        "Italian Songs - Low Complexity", "Italian Songs - Medium Complexity", "Italian Songs - High Complexity",
+        "Spanish Songs - Low Complexity", "Spanish Songs - Medium Complexity", "Spanish Songs - High Complexity",
+        "Dutch Songs - Low Complexity", "Dutch Songs - Medium Complexity", "Dutch Songs - High Complexity",
+        "Korean Songs - Low Complexity", "Korean Songs - Medium Complexity", "Korean Songs - High Complexity",
+        "German Songs - Low Complexity", "German Songs - Medium Complexity", "German Songs - High Complexity",
+        "Turkish Songs - Low Complexity", "Turkish Songs - Medium Complexity", "Turkish Songs - High Complexity"
     ]
+
 
     try:
         playlists = spotify.current_user_playlists(limit=50)
