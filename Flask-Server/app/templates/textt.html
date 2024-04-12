@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,84 +9,12 @@
     <link rel="stylesheet" href="/static/css/style.css">
 
     <style>
-        /* body,
-        html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Roboto', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            line-height: 1.6;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 2%;
-            background-color: #121212;
-        }
-
-        .logo img {
-            height: 80px;
-            transition: transform 0.3s ease;
-        }
-
-        .logo img:hover {
-            transform: scale(1.05);
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            margin: 0;
-        }
-
-        nav ul li {
-            margin-left: 25px;
-            padding: 5px 0;
-        }
-
-        nav ul li a {
-            color: #e0e0e0;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-            font-size: 18px;
-            font-family: 'Futura LT', sans-serif;
-
-        }
-
-        nav ul li a:hover {
-            color: #ff5722;
-            padding-bottom: 2px;
-        }
-
-        .profile-img {
-            border-radius: 50%;
-            height: 40px;
-            transition: transform 0.3s ease;
-        }
-
-        .profile-img:hover {
-            transform: scale(1.1);
-        } */
         .step-container {
             display: flex;
             justify-content: space-around;
             align-items: stretch;
             flex-wrap: wrap;
             margin: -10px;
-            /* Compensate for the padding */
         }
 
         .step {
@@ -102,33 +29,25 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin: 10px;
             flex: 1 0 calc(33.333% - 20px);
-            /* Adjust basis to account for margin */
             min-height: 250px;
-            /* Set based on the tallest step */
         }
 
         @media (max-width: 1200px) {
             .step {
                 flex: 1 0 calc(50% - 20px);
-                /* Half width for medium screens */
             }
         }
 
         @media (max-width: 768px) {
             .step-container {
                 justify-content: center;
-                /* Center on small screens */
                 flex-wrap: wrap;
-                /* Allow wrapping on small screens */
             }
 
             .step {
                 flex: 1 0 90%;
-                /* Full width on smaller screens */
             }
         }
-
-
 
         .arrow {
             flex-basis: 100%;
@@ -138,8 +57,7 @@
             color: #ff5722;
         }
 
-        select,
-        button {
+        select, button {
             width: 100%;
             padding: 10px;
             margin-top: 10px;
@@ -159,19 +77,16 @@
             background-color: #ffa726;
         }
 
-        .tracks-container,
-        .languages {
+        .tracks-container, .languages {
             margin-top: 20px;
         }
 
-        .tracks-container ul,
-        .languages {
+        .tracks-container ul, .languages {
             list-style-type: none;
             padding: 0;
         }
 
-        .tracks-container ul li,
-        .languages span {
+        .tracks-container ul li, .languages span {
             margin-bottom: 10px;
             padding-bottom: 10px;
             border-bottom: 1px solid #e0e0e0;
@@ -182,29 +97,15 @@
             justify-content: center;
             align-items: center;
             min-height: calc(100vh - 80px);
-            /* Adjust 80px to the height of your header */
             flex-direction: column;
-            /* This ensures that content in <main> is centered and aligned in order */
         }
 
-        .tracks-container {
-            width: 90%;
-            /* Optional: define a specific width for the container */
-            max-width: 600px;
-            /* Optional: prevent the container from getting too wide on large screens */
-        }
-
-        /* Container for the language distribution, making it a flex column */
         .languages {
             display: flex;
             flex-direction: row;
-            /* Align children horizontally */
             flex-wrap: wrap;
-            /* If there are many items, they will wrap to the next line */
             justify-content: center;
-            /* Center children horizontally in the container */
             align-items: center;
-            /* Center children vertically in the container */
             width: 100%;
         }
 
@@ -215,56 +116,19 @@
             border-radius: 5px;
             font-size: 14px;
             margin: 5px;
-            /* Adjust margin for spacing around each item */
             text-align: center;
-            box-sizing: border-box;
-            /* Ensures padding is included in the width */
-            /* You can add max-width or flex-basis to control the width of each language item */
             flex: 1;
-            /* This will make each .language span take up equal space */
             min-width: 100px;
-            /* Prevents the items from being too narrow */
-        }
-
-
-
-        @media (max-width: 768px) {
-            .step-container {
-                flex-direction: column;
-            }
-
-            .step,
-            .arrow {
-                width: 90%;
-                margin: 10px auto;
-            }
-        }
-
-        .centered-heading {
-            text-align: center;
-            width: 100%;
-            /* Ensure full width for alignment */
-        }
-
-
-        .tracks-container ul li,
-        .languages span {
-            /* existing styles */
-            text-align: center;
-            /* This will center-align the text within the list items and spans */
         }
 
         .loading-overlay {
             position: fixed;
-            /* Full-screen */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.75);
-            /* Black background with opacity */
             z-index: 1000;
-            /* Ensure it's on top */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -272,9 +136,7 @@
 
         .loading-spinner {
             border: 5px solid #f3f3f3;
-            /* Light grey */
             border-top: 5px solid #3498db;
-            /* Blue */
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -285,22 +147,19 @@
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
         }
     </style>
 </head>
-
 <body>
     <header>
         <div class="logo">
             <img src="/static/images/logo2.png" alt="MusicLang Logo">
         </div>
         <nav>
-            <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}"
-                alt="Profile Image" class="profile-img">
+            <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}" alt="Profile Image" class="profile-img">
             <ul>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Features</a></li>
@@ -308,7 +167,7 @@
             </ul>
         </nav>
     </header>
-    <main>
+     <main>
         <div class="step-container">
             <div class="step" data-step="1">
                 <h2>Select Playlist</h2>
@@ -330,7 +189,7 @@
                 <button id="analyzePlaylist">Analyze Playlist</button>
             </div>
             <div class="arrow">🢃</div>
-            
+
             <div class="step" data-step="3">
                 <h2>Create Playlists by Language</h2>
                 <select id="creationLevelSelect">
@@ -357,7 +216,5 @@
         </div>
     </main>
     <script src="/static/js/app.js"></script> <!-- Include your JavaScript file here -->
-
 </body>
-
 </html>

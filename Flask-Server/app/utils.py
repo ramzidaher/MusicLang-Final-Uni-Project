@@ -250,12 +250,11 @@ def get_genius_client():
     return current_app.config['genius_client']
 
 
+
+
 def fetch_lyrics(artist, title):
     """
     Fetch lyrics for a given artist and title using the Genius API.
-
-    This function fetches lyrics for a given artist and title using the Genius API.
-    It requires the artist name and the title of the song.
 
     Args:
         artist (str): The name of the artist.
@@ -265,10 +264,12 @@ def fetch_lyrics(artist, title):
         str or None: The lyrics of the song if found, otherwise returns None.
     """
     genius = get_genius_client()  # Get the Genius client
-    song = genius.search_song(title, artist)
-    if song:
-        return song.lyrics
-    return None
+    try:
+        song = genius.search_song(title, artist)
+        return song.lyrics if song else None
+    except Exception as e:
+        print(f"An error occurred while fetching lyrics: {e}")
+        return None
 
 
 def get_language_name(iso_code):
