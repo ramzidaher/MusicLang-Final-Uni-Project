@@ -423,6 +423,32 @@ nav ul li a:hover {
 }
 
 
+/* Ensure the dropdown items are not displayed until hovered */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #333; /* Dark background for contrast */
+    border: none;
+    border-radius: .25rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+    top: 100%; /* Position below the dropdown trigger */
+    left: 0;
+    z-index: 1000; /* Ensure dropdown is on top of other content */
+    min-width: 10rem; /* Minimum width of dropdown items */
+}
+
+.dropdown-menu a {
+    color: #fff; /* Text color for dropdown items */
+    padding: 12px 16px; /* Padding for dropdown items */
+    text-decoration: none; /* No underline */
+    display: block; /* Dropdown items take up full width of menu */
+}
+
+.dropdown-menu a:hover {
+    background-color: #505050; /* Darker background on hover */
+}
+
+
 .profile-img:hover {
     transform: scale(1.1);
 }
@@ -596,3 +622,32 @@ nav ul li a:hover {
 
 /* Ensure these styles are included in your main CSS file or within a <style> tag in the head of your dashboard template. */
 
+
+
+/* Style for the dropdown menu */
+.nav-item .dropdown-menu {
+    display: none; /* Hide by default */
+    position: absolute; /* Position it relative to the parent item */
+    background-color: #333; /* Dark background for the dropdown */
+    min-width: 160px; /* Minimum width */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    z-index: 1; /* Ensure it's on top of other elements */
+}
+
+/* Show the dropdown menu on parent hover */
+.nav-item:hover .dropdown-menu {
+    display: block; /* Show on hover */
+}
+
+/* Style for links inside the dropdown */
+.nav-item .dropdown-menu a {
+    color: #E0E0E0; /* Light color for text */
+    padding: 12px 16px; /* Padding for spacing */
+    text-decoration: none; /* No underline */
+    display: block; /* Display as block for width */
+}
+
+/* Change background on dropdown item hover */
+.nav-item .dropdown-menu a:hover {
+    background-color: #505050; /* Slightly darker on hover */
+}

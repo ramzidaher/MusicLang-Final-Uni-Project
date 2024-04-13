@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,82 +11,104 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="icon" href="/static/images/favicon.png">
 </head>
+
 <body>
 
 
-<!-- Dashboard Header -->
-<header>
-    <div class="logo">
-        <img src="/static/images/logo2.png" alt="MusicLang Logo">
-    </div>
-    <nav>
-        <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}" alt="Profile Image" class="profile-img">
-        <ul>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Features</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-</header>
-<!-- Connection Status Messages -->
-<section class="container text-center py-5">
-    {% if not spotify_connected %}
+    <!-- Dashboard Header -->
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo2.png" alt="MusicLang Logo">
+        </div>
+        <nav>
+            <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}"
+                alt="Profile Image" class="profile-img">
+            <ul>
+                <li><a href="#">About</a></li>
+                <!-- Dropdown Menu for Features -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Features
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/feature_analyze">Lyrics Analysis</a>
+                        <a class="dropdown-item" href="/playlist_analysis">Lyrics Statistics</a>
+                        <a class="dropdown-item" href="/playlists">Playlist Management</a>
+                    </div>
+                </li>
+                
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+
+    </header>
+    <!-- Connection Status Messages -->
+    <section class="container text-center py-5">
+        {% if not spotify_connected %}
         <div class="alert alert-warning" role="alert">
             <h4 class="alert-heading">Music Service Connection Required!</h4>
             <p>You need to connect your music services to fully utilize MusicLang.</p>
             <hr>
             <a href="/connect_spotify" class="btn btn-primary">Connect Spotify</a>
         </div>
-    {% endif %}
-</section>
+        {% endif %}
+    </section>
 
 
-<!-- Dashboard Features -->
-<section class="container text-center py-5">
-    <h3 class="mb-4">Your Features</h3>
-    <div class="row">
-        <!-- Feature 1: Lyrics Analysis -->
-        <div class="col-md-4 mb-3">
-            <div class="feature-box">
-                <i class="fas fa-microphone-alt fa-3x"></i>
-                <h4>Lyrics Analysis</h4>
-                <p>Analyze lyrics in various languages and uncover their meanings.</p>
-                <a href="/feature_analyze" class="btn btn-outline-light">Analyze Now</a>
+    <!-- Dashboard Features -->
+    <section class="container text-center py-5">
+        <h3 class="mb-4">Your Features</h3>
+        <div class="row">
+            <!-- Feature 1: Lyrics Analysis -->
+            <div class="col-md-4 mb-3">
+                <div class="feature-box">
+                    <i class="fas fa-microphone-alt fa-3x"></i>
+                    <h4>Lyrics Analysis</h4>
+                    <p>Analyze lyrics in various languages.</p>
+                    <a href="/feature_analyze" class="btn btn-outline-light">Analyze Now</a>
+                </div>
             </div>
-        </div>
 
-        <!-- Feature 2: Playlist Management -->
-        <div class="col-md-4 mb-3">
-            <div class="feature-box">
-                <i class="fas fa-music fa-3x"></i>
-                <h4>Playlist Management</h4>
-                <p>Create and organize your playlists based on language and mood.</p>
-                <a href="/playlists" class="btn btn-outline-light">Manage Playlists</a>
+            <!-- Feature 2: Integration Settings -->
+            <div class="col-md-4 mb-3">
+                <div class="feature-box">
+                    <i class="fas fa-cogs fa-3x"></i>
+                    <h4>Lyrics Statistics</h4>
+                    <p>See your playlist lyrics statistics.</p>
+                    <a href="/playlist_analysis" class="btn btn-outline-light">View Statistics</a>
+                </div>
             </div>
-        </div>
 
-        <!-- Feature 3: Integration Settings -->
-        <div class="col-md-4 mb-3">
-            <div class="feature-box">
-                <i class="fas fa-cogs fa-3x"></i>
-                <h4>Lyrics Statistics</h4>
-                <p>See your playlist lyrics statistics.</p>
-                <a href="/playlist_analysis" class="btn btn-outline-light">View Statistics</a>
+            <!-- Feature 3: Playlist Management -->
+            <div class="col-md-4 mb-3">
+                <div class="feature-box">
+                    <i class="fas fa-music fa-3x"></i>
+                    <h4>Playlist Management</h4>
+                    <p>Create and organize your playlists</p>
+                    <a href="/playlists" class="btn btn-outline-light">Manage Playlists</a>
+                </div>
             </div>
+
+
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Additional sections such as Recent Activities, Recommendations, etc., can be added here -->
+    <!-- Additional sections such as Recent Activities, Recommendations, etc., can be added here -->
 
-<!-- Footer -->
-<footer class="text-center py-4">
-    <p>&copy; 2024 MusicLang. Explore the Symphony of Languages.</p>
-</footer>
+    <!-- Footer -->
+    <footer class="text-center py-4">
+        <p>&copy; 2024 MusicLang. Explore the Symphony of Languages.</p>
+    </footer>
 
-<!-- Bootstrap Scripts -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
+
 </html>

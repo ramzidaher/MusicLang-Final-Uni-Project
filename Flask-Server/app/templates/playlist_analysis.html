@@ -13,66 +13,43 @@
 </head>
 
 <style>
+    body, html {
+        font-family: 'Roboto', sans-serif;
+        color: #fff;
+        background: #121212;
+    }
+
     .step-container {
         display: flex;
         justify-content: space-around;
         align-items: stretch;
         flex-wrap: wrap;
-        margin: -10px;
-        /* Compensate for the padding */
-        /* Compensate for the padding */
+        padding: 20px;
     }
 
     .step {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 20px;
         background: #222;
         border-radius: 10px;
-        color: #fff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        flex: 1 0 calc(33.333% - 20px);
-        /* Adjust basis to account for margin */
-        /* Set based on the tallest step */
+        padding: 20px;
         margin: 10px;
         min-height: 250px;
+        flex: 1 0 30%; /* Makes steps wider */
     }
 
     @media (max-width: 1200px) {
         .step {
-            flex: 1 0 calc(50% - 20px);
-            /* Half width for medium screens */
+            flex: 1 0 45%; /* Wider on medium screens */
         }
     }
 
     @media (max-width: 768px) {
-        .step-container {
-            justify-content: center;
-            /* Center on small screens */
-            flex-wrap: wrap;
-            /* Allow wrapping on small screens */
-        }
-
         .step {
-            flex: 1 0 90%;
-            /* Full width on smaller screens */
+            flex: 1 0 90%; /* Almost full width on small screens */
         }
     }
 
-
-
-    .arrow {
-        flex-basis: 100%;
-        text-align: center;
-        margin: 20px 0;
-        font-size: 24px;
-        color: #ff5722;
-    }
-
-    select,
-    button {
+    select, button {
         width: 100%;
         padding: 10px;
         margin-top: 10px;
@@ -85,29 +62,34 @@
 
     button {
         background-color: #ff5722;
-        cursor: pointer;
     }
 
     button:hover {
         background-color: #ffa726;
     }
 
-    .tracks-container,
-    .languages {
+    .tracks-container, .languages {
         margin-top: 20px;
+        width: 90%;
+        max-width: 600px;
     }
 
-    .tracks-container ul,
     .languages {
-        list-style-type: none;
-        padding: 0;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
     }
 
-    .tracks-container ul li,
-    .languages span {
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #e0e0e0;
+    .language {
+        background: #ff5722;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin: 5px;
+        text-align: center;
+        flex: 1;
+        min-width: 100px;
     }
 
     main {
@@ -115,124 +97,18 @@
         justify-content: center;
         align-items: center;
         min-height: calc(100vh - 80px);
-        /* Adjust 80px to the height of your header */
         flex-direction: column;
-        /* This ensures that content in <main> is centered and aligned in order */
     }
 
-    .tracks-container {
-        width: 90%;
-        /* Optional: define a specific width for the container */
-        max-width: 600px;
-        /* Optional: prevent the container from getting too wide on large screens */
-    }
-
-    /* Container for the language distribution, making it a flex column */
-    .languages {
+    /* header {
         display: flex;
-        flex-direction: row;
-        /* Align children horizontally */
-        flex-wrap: wrap;
-        /* If there are many items, they will wrap to the next line */
-        justify-content: center;
-        /* Center children horizontally in the container */
-        align-items: center;
-        /* Center children vertically in the container */
-        width: 100%;
-    }
-
-    .language {
-        background: #ff5722;
-        color: #121212;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 14px;
-        margin: 5px;
-        /* Adjust margin for spacing around each item */
-        text-align: center;
-        box-sizing: border-box;
-        /* Ensures padding is included in the width */
-        /* You can add max-width or flex-basis to control the width of each language item */
-        flex: 1;
-        /* This will make each .language span take up equal space */
-        min-width: 100px;
-        /* Prevents the items from being too narrow */
-    }
+        justify-content: space-between;
+        padding: 20px;
+        background: #333;
+    } */
 
 
-
-    @media (max-width: 768px) {
-        .step-container {
-            flex-direction: column;
-        }
-
-        .step,
-        .arrow {
-            width: 90%;
-            margin: 10px auto;
-        }
-    }
-
-    .centered-heading {
-        text-align: center;
-        width: 100%;
-        /* Ensure full width for alignment */
-    }
-
-
-    .tracks-container ul li,
-    .languages span {
-        /* existing styles */
-        text-align: center;
-        /* This will center-align the text within the list items and spans */
-    }
-
-    .loading-overlay {
-        position: fixed;
-        /* Full-screen */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.75);
-        /* Black background with opacity */
-        z-index: 1000;
-        /* Ensure it's on top */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .loading-spinner {
-        border: 5px solid #f3f3f3;
-        /* Light grey */
-        border-top: 5px solid #3498db;
-        /* Blue */
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 2s linear infinite;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    #analysisResult {
-        width: 100%;
-        /* To make it full width */
-        margin: 20px auto;
-        /* Adjust as needed for spacing */
-        /* Add any other styles you may need for the result container */
-    }
 </style>
-
 <body>
     <header>
         <div class="logo">
@@ -259,24 +135,14 @@
                     {% endfor %}
                 </select>
                 <button onclick="analyzePlaylist()">Analyze Playlist and View Results</button>
-
-                <!-- Place the result div right after the button -->
-                <!-- Button to trigger sentiment analysis -->
                 <button onclick="fetchAndDisplaySentiment()">Analyze Sentiments</button>
-                <!-- Trigger the updated JS function -->
-                <!-- Button to trigger genre analysis -->
                 <button onclick="fetchAndDisplayGenres()">Analyze Genres</button>
-
-                <!-- Placeholder for genre analysis results -->
-
-            <div id="genreResult" style="margin-top: 20px;"></div>
-            <div id="sentimentResult" style="margin-top: 20px;"></div>
-            <div id="analysisResult" style="margin-top: 20px;"></div>
-
-
+                <div id="genreResult" style="margin-top: 20px;"></div>
+                <div id="sentimentResult" style="margin-top: 20px;"></div>
+                <div id="analysisResult" style="margin-top: 20px;"></div>
             </div>
-
-            <script>
+        </div>
+        <script>
                 function analyzePlaylist() {
                     const playlistId = document.getElementById('playlistSelect').value;
                     document.getElementById('analysisResult').innerHTML = 'Loading...';
@@ -285,7 +151,7 @@
                         alert('Please select a playlist first.');
                         return;
                     }
-                    fetch(`/analyze_playlist_languages/${playlistId}`)
+                    fetch(`/analyze_playlist_languages_stats/${playlistId}`)
                         .then(response => response.json())
                         .then(data => {
                             plotLanguageDistribution(data);

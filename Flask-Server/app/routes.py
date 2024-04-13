@@ -662,75 +662,117 @@ from spotipy.oauth2 import SpotifyOAuth
 
 from collections import Counter
 
-@main.route('/create_language_playlists/<playlist_id>/<level>', methods=['GET'])
-def create_language_playlists(playlist_id, level):
+
+# WORKIGN LEVEL ONE
+
+# @main.route('/create_language_playlists/<playlist_id>/<level>', methods=['GET'])
+# def create_language_playlists(playlist_id, level):
+#     if 'user_id' not in session:
+#         return jsonify({'error': 'User not signed in'}), 401
+
+#     user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
+#     if not user_oauth or not user_oauth.spotify_access_token:
+#         return jsonify({'error': 'Spotify connection is required.'}), 403
+
+#     spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
+#     languages_data = {}
+#     track_language_mapping = {}
+
+#     try:
+#         results = spotify.playlist_tracks(playlist_id)
+#         while results:
+#             for item in results['items']:
+#                 track = item['track']
+#                 lyrics = fetch_lyrics(track['artists'][0]['name'], track['name'])
+#                 if lyrics:
+#                     language_results = aggregate_results_from_text(lyrics)
+#                     # Determine highest language percentage for each track
+#                     highest_language = max(language_results, key=language_results.get)
+#                     track_language_mapping[track['uri']] = (highest_language, language_results[highest_language])
+#                     for language, percentage in language_results.items():
+#                         if language not in languages_data:
+#                             languages_data[language] = []
+#                         languages_data[language].append((track['uri'], percentage))
+
+#             results = spotify.next(results) if results['next'] else None
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+#     spotify_user_id = spotify.current_user()['id']
+#     created_playlists = {}
+
+#     # Calculate average percentage per language to determine top two languages
+#     language_averages = {lang: sum(pct for _, pct in tracks) / len(tracks) for lang, tracks in languages_data.items()}
+#     top_two_languages = sorted(language_averages, key=language_averages.get, reverse=True)[:2]
+
+#     if level == 'high':
+#         # Create playlists for all languages with any percentage
+#         for language, track_info in languages_data.items():
+#             playlist_uris = [uri for uri, _ in track_info]
+#             playlist_name = f"{language} Songs - High"
+#             playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
+#             spotify.playlist_add_items(playlist['id'], playlist_uris)
+#             created_playlists[language] = playlist['id']
+#     elif level in ['medium', 'low']:
+#         # Create playlists for specific languages or all depending on the level
+#         target_languages = languages_data.keys() if level == 'medium' else top_two_languages
+#         for language in target_languages:
+#             if level == 'medium':
+#                 playlist_uris = [uri for uri, (lang, _) in track_language_mapping.items() if lang == language]
+#             else:  # low level
+#                 playlist_uris = [uri for uri, (lang, _) in track_language_mapping.items() if lang == language and lang in top_two_languages]
+
+#             if playlist_uris:
+#                 playlist_name = f"{language} Songs - {level.capitalize()}"
+#                 playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
+#                 spotify.playlist_add_items(playlist['id'], playlist_uris)
+#                 created_playlists[language] = playlist['id']
+
+#         if level == 'low':
+#             # Create a playlist for other tracks not in the top two languages
+#             other_uris = [uri for uri, (lang, _) in track_language_mapping.items() if lang not in top_two_languages]
+#             if other_uris:
+#                 other_playlist = spotify.user_playlist_create(spotify_user_id, "Other Languages - Low", public=True)
+#                 spotify.playlist_add_items(other_playlist['id'], other_uris)
+#                 created_playlists['Other'] = other_playlist['id']
+
+#     return jsonify({
+#         'message': 'Playlists created successfully',
+#         'playlists': created_playlists
+#     })
+
+
+
+
+@main.route('/delete_test_playlists', methods=['GET'])
+def delete_test_playlists():
     if 'user_id' not in session:
-        return jsonify({'error': 'User not signed in'}), 401
+        flash('You must be logged in to delete playlists.')
+        return redirect(url_for('main.signin'))
 
     user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
     if not user_oauth or not user_oauth.spotify_access_token:
-        return jsonify({'error': 'Spotify connection is required.'}), 403
+        flash('Spotify connection is required.')
+        return redirect(url_for('main.connect_spotify'))
 
     spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
-    languages_data = {}
-
+    
+    # Fetch all playlists from the user's account
     try:
-        results = spotify.playlist_tracks(playlist_id)
-        while results:
-            for item in results['items']:
-                track = item['track']
-                lyrics = fetch_lyrics(track['artists'][0]['name'], track['name'])
-                if lyrics:
-                    language_results = aggregate_results_from_text(lyrics)
-                    # Store track URIs grouped by language
-                    for language, percentage in language_results.items():
-                        if language not in languages_data:
-                            languages_data[language] = []
-                        languages_data[language].append((track['uri'], percentage))
+        playlists = spotify.current_user_playlists()
+        delete_count = 0
+        for playlist in playlists['items']:
+            # Look for playlists with names containing 'High', 'Medium', or 'Low'
+            if any(level in playlist['name'] for level in ['High', 'Medium', 'Low']):
+                spotify.current_user_unfollow_playlist(playlist['id'])
+                delete_count += 1
 
-            results = spotify.next(results) if results['next'] else None
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        flash(f'Successfully deleted {delete_count} test playlists.')
+    except spotipy.exceptions.SpotifyException as e:
+        flash(f'An error occurred while trying to delete playlists: {e}')
+        return redirect(url_for('main.dashboard'))
 
-    spotify_user_id = spotify.current_user()['id']
-    created_playlists = {}
-
-    if level == 'medium':
-        threshold = 0.25
-        for language, track_info in languages_data.items():
-            playlist_uris = [uri for uri, percentage in track_info if percentage >= threshold]
-            if playlist_uris:
-                playlist_name = f"{language} Songs - Medium"
-                playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
-                spotify.playlist_add_items(playlist['id'], playlist_uris)
-                created_playlists[language] = playlist['id']
-
-    elif level == 'low':
-        # Combine all tracks into one playlist regardless of language percentage
-        all_tracks = [uri for track_info in languages_data.values() for uri, _ in track_info]
-        if all_tracks:
-            playlist_name = "Other Languages - Low"
-            other_playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
-            spotify.playlist_add_items(other_playlist['id'], all_tracks)
-            created_playlists['Other'] = other_playlist['id']
-
-    elif level == 'high':
-        threshold = 0.75
-        for language, track_info in languages_data.items():
-            playlist_uris = [uri for uri, percentage in track_info if percentage >= threshold]
-            if playlist_uris:
-                playlist_name = f"{language} Songs - High"
-                playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
-                spotify.playlist_add_items(playlist['id'], playlist_uris)
-                created_playlists[language] = playlist['id']
-
-    return jsonify({
-        'message': 'Playlists created successfully',
-        'playlists': created_playlists
-    })
-
-
-
+    return redirect(url_for('main.dashboard'))
 
 
 
@@ -796,6 +838,76 @@ def delete_specific_playlists():
 
     return redirect(url_for('main.dashboard'))
 
+
+
+
+@main.route('/analyze_playlist_languages_stats/<playlist_id>')
+def analyze_playlist_languages_stats(playlist_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'User not signed in'}), 401
+
+    user_oauth = UserOAuth.query.filter_by(user_id=user_id).first()
+    if not user_oauth or not user_oauth.spotify_access_token:
+        return jsonify({'error': 'Spotify connection is required.'}), 403
+
+    oauth_manager = SpotifyOAuth(cache_path=session_cache_path(user_id))
+    spotify = spotipy.Spotify(auth_manager=oauth_manager)
+
+    lyrics_and_languages = []
+    num_tracks_analyzed = 0
+    language_totals = {}
+
+    # Function to process tracks
+    def process_tracks(tracks):
+        nonlocal num_tracks_analyzed, lyrics_and_languages, language_totals
+        for item in tracks['items']:
+            track_name = item['track']['name']
+            artist_name = item['track']['artists'][0]['name']
+            lyrics = fetch_lyrics(artist_name, track_name)
+            if lyrics:
+                language_results = aggregate_results_from_text(lyrics)
+                sorted_languages = sorted(language_results.items(), key=lambda x: x[1], reverse=True)
+                lyrics_and_languages.append({
+                    'track_name': track_name,
+                    'artist_name': artist_name,
+                    'languages': sorted_languages
+                })
+                num_tracks_analyzed += 1
+                for lang, percentage in language_results.items():
+                    if lang in language_totals:
+                        language_totals[lang] += percentage
+                    else:
+                        language_totals[lang] = percentage
+
+    # Fetch and process tracks
+    try:
+        if playlist_id == 'saved_tracks':
+            results = spotify.current_user_saved_tracks(limit=50)
+        else:
+            results = spotify.playlist_tracks(playlist_id, limit=100)
+
+        while results:
+            process_tracks(results)
+            if results['next']:
+                results = spotify.next(results)
+            else:
+                results = None
+    except spotipy.exceptions.SpotifyException as e:
+        return jsonify({'error': f'Spotify API error: {e}'}), 400
+
+    # Calculate average language percentages
+    average_language_percentages = {}
+    if num_tracks_analyzed > 0:
+        average_language_percentages = {lang: (total / num_tracks_analyzed) for lang, total in language_totals.items()}
+        sorted_average_languages = sorted(average_language_percentages.items(), key=lambda x: x[1], reverse=True)
+
+    # Prepare the response
+    return jsonify({
+        'analysis_results': lyrics_and_languages,
+        'num_tracks_analyzed': num_tracks_analyzed,
+        'average_languages': {lang: percentage for lang, percentage in sorted_average_languages}
+    })
 
 
 
@@ -866,7 +978,6 @@ def analyze_playlist_languages(playlist_id):
         'num_tracks_analyzed': num_tracks_analyzed,
         'average_languages': {lang: percentage for lang, percentage in sorted_average_languages}
     })
-
 
 @main.route('/create_playlist_from_liked_songs')
 def create_playlist_from_liked_songs():
@@ -1102,3 +1213,71 @@ def analyze_playlist_genres(playlist_id):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@main.route('/create_language_playlists/<playlist_id>/<level>', methods=['GET'])
+def create_language_playlists(playlist_id, level):
+    if 'user_id' not in session:
+        return jsonify({'error': 'User not signed in'}), 401
+
+    user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
+    if not user_oauth or not user_oauth.spotify_access_token:
+        return jsonify({'error': 'Spotify connection is required.'}), 403
+
+    spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
+    languages_data = {}
+    created_playlists = {}
+
+    try:
+        results = spotify.playlist_tracks(playlist_id)
+        while results:
+            for item in results['items']:
+                track = item['track']
+                lyrics = fetch_lyrics(track['artists'][0]['name'], track['name'])
+                if lyrics:
+                    language_results = aggregate_results_from_text(lyrics)
+                    for language, percentage in language_results.items():
+                        if language not in languages_data:
+                            languages_data[language] = []
+                        languages_data[language].append((track['uri'], percentage))
+
+            results = spotify.next(results) if results['next'] else None
+    except Exception as e:
+        return jsonify({'error': 'Error fetching or processing tracks: ' + str(e)}), 500
+
+    threshold = {
+        'high': 0.75,
+        'medium': 0.25,
+        'low': 0.10
+    }.get(level, 0.10)
+
+    spotify_user_id = spotify.current_user()['id']
+
+    for language, track_info in languages_data.items():
+        playlist_uris = [uri for uri, percentage in track_info if percentage >= threshold]
+        if playlist_uris:
+            playlist_name = f"{language} Songs - {level.capitalize()}"
+            try:
+                playlist = spotify.user_playlist_create(spotify_user_id, playlist_name, public=True)
+                if playlist:
+                    batch_add_tracks(spotify, playlist['id'], playlist_uris)
+                    created_playlists[language] = playlist['id']
+                else:
+                    print(f"Failed to create playlist: {playlist_name}")
+            except Exception as e:
+                print(f"Error creating or populating playlist {playlist_name}: {e}")
+
+    return jsonify({
+        'message': 'Playlists created successfully',
+        'playlists': created_playlists
+    })
+
+def batch_add_tracks(spotify, playlist_id, track_uris):
+    max_tracks_per_request = 100
+    for i in range(0, len(track_uris), max_tracks_per_request):
+        batch_uris = track_uris[i:i + max_tracks_per_request]
+        try:
+            response = spotify.playlist_add_items(playlist_id, batch_uris)
+            print(f"Added {len(batch_uris)} tracks to playlist {playlist_id}: {response}")
+        except Exception as e:
+            print(f"Error adding tracks to playlist {playlist_id}: {e}")
