@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Analysis - MusicLang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="icon" href="/static/images/favicon.png">
+
+</head>
+
+<style>
+    .step-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: stretch;
+        flex-wrap: wrap;
+        margin: -10px;
+        /* Compensate for the padding */
+        /* Compensate for the padding */
+    }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px;
+        background: #222;
+        border-radius: 10px;
+        color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex: 1 0 calc(33.333% - 20px);
+        /* Adjust basis to account for margin */
+        /* Set based on the tallest step */
+        margin: 10px;
+        min-height: 250px;
+    }
+
+    @media (max-width: 1200px) {
+        .step {
+            flex: 1 0 calc(50% - 20px);
+            /* Half width for medium screens */
+        }
+    }
+
+    @media (max-width: 768px) {
+        .step-container {
+            justify-content: center;
+            /* Center on small screens */
+            flex-wrap: wrap;
+            /* Allow wrapping on small screens */
+        }
+
+        .step {
+            flex: 1 0 90%;
+            /* Full width on smaller screens */
+        }
+    }
+
+
+
+    .arrow {
+        flex-basis: 100%;
+        text-align: center;
+        margin: 20px 0;
+        font-size: 24px;
+        color: #ff5722;
+    }
+
+    select,
+    button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        border: none;
+        background: #333;
+        color: white;
+        font-size: 16px;
+    }
+
+    button {
+        background-color: #ff5722;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #ffa726;
+    }
+
+    .tracks-container,
+    .languages {
+        margin-top: 20px;
+    }
+
+    .tracks-container ul,
+    .languages {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .tracks-container ul li,
+    .languages span {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 80px);
+        /* Adjust 80px to the height of your header */
+        flex-direction: column;
+        /* This ensures that content in <main> is centered and aligned in order */
+    }
+
+    .tracks-container {
+        width: 90%;
+        /* Optional: define a specific width for the container */
+        max-width: 600px;
+        /* Optional: prevent the container from getting too wide on large screens */
+    }
+
+    /* Container for the language distribution, making it a flex column */
+    .languages {
+        display: flex;
+        flex-direction: row;
+        /* Align children horizontally */
+        flex-wrap: wrap;
+        /* If there are many items, they will wrap to the next line */
+        justify-content: center;
+        /* Center children horizontally in the container */
+        align-items: center;
+        /* Center children vertically in the container */
+        width: 100%;
+    }
+
+    .language {
+        background: #ff5722;
+        color: #121212;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        margin: 5px;
+        /* Adjust margin for spacing around each item */
+        text-align: center;
+        box-sizing: border-box;
+        /* Ensures padding is included in the width */
+        /* You can add max-width or flex-basis to control the width of each language item */
+        flex: 1;
+        /* This will make each .language span take up equal space */
+        min-width: 100px;
+        /* Prevents the items from being too narrow */
+    }
+
+
+
+    @media (max-width: 768px) {
+        .step-container {
+            flex-direction: column;
+        }
+
+        .step,
+        .arrow {
+            width: 90%;
+            margin: 10px auto;
+        }
+    }
+
+    .centered-heading {
+        text-align: center;
+        width: 100%;
+        /* Ensure full width for alignment */
+    }
+
+
+    .tracks-container ul li,
+    .languages span {
+        /* existing styles */
+        text-align: center;
+        /* This will center-align the text within the list items and spans */
+    }
+
+    .loading-overlay {
+        position: fixed;
+        /* Full-screen */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        /* Black background with opacity */
+        z-index: 1000;
+        /* Ensure it's on top */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .loading-spinner {
+        border: 5px solid #f3f3f3;
+        /* Light grey */
+        border-top: 5px solid #3498db;
+        /* Blue */
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    #analysisResult {
+        width: 100%;
+        /* To make it full width */
+        margin: 20px auto;
+        /* Adjust as needed for spacing */
+        /* Add any other styles you may need for the result container */
+    }
+</style>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo2.png" alt="MusicLang Logo">
+        </div>
+        <nav>
+            <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}"
+                alt="Profile Image" class="profile-img">
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="step-container">
+            <div class="step" data-step="1">
+                <h2>Playlist Analysis</h2>
+                <select id="playlistSelect">
+                    <option>Select your playlist</option>
+                    {% for playlist in playlists %}
+                    <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+                    {% endfor %}
+                </select>
+                <button onclick="analyzePlaylist()">Analyze Playlist and View Results</button>
+
+                <!-- Place the result div right after the button -->
+                <!-- Button to trigger sentiment analysis -->
+                <button onclick="fetchAndDisplaySentiment()">Analyze Sentiments</button>
+                <!-- Trigger the updated JS function -->
+                <!-- Button to trigger genre analysis -->
+                <button onclick="fetchAndDisplayGenres()">Analyze Genres</button>
+
+                <!-- Placeholder for genre analysis results -->
+
+            <div id="genreResult" style="margin-top: 20px;"></div>
+            <div id="sentimentResult" style="margin-top: 20px;"></div>
+            <div id="analysisResult" style="margin-top: 20px;"></div>
+
+
+            </div>
+
+            <script>
+                function analyzePlaylist() {
+                    const playlistId = document.getElementById('playlistSelect').value;
+                    document.getElementById('analysisResult').innerHTML = 'Loading...';
+
+                    if (!playlistId) {
+                        alert('Please select a playlist first.');
+                        return;
+                    }
+                    fetch(`/analyze_playlist_languages/${playlistId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            plotLanguageDistribution(data);
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+
+                function fetchAndDisplaySentiment() {
+                    const playlistId = document.getElementById('playlistSelect').value;
+                    if (!playlistId) {
+                        alert('Please select a playlist first.');
+                        return;
+                    }
+                    fetch(`/analyze_playlist_sentiments/${playlistId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displaySentiment(data);
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+
+                function plotLanguageDistribution(data) {
+                    const container = document.getElementById('analysisResult');
+                    container.innerHTML = ''; // Clear previous results
+
+                    const languageData = data.average_languages;
+                    const labels = Object.keys(languageData);
+                    const values = Object.values(languageData);
+
+                    const dataForPlotly = [{
+                        labels: labels,
+                        values: values,
+                        type: 'pie',
+                        textinfo: 'label+percent',
+                        textposition: 'outside',
+                        automargin: true
+                    }];
+
+                    const layout = {
+                        title: 'Language Distribution',
+                        height: 400,
+                        width: 500,
+                        showlegend: false,
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        font: {
+                            color: '#e0e0e0',
+                            family: 'Roboto, sans-serif'
+                        }
+                    };
+
+                    Plotly.newPlot('analysisResult', dataForPlotly, layout);
+                }
+
+                function displaySentiment(data) {
+                    const container = document.getElementById('sentimentResult');
+                    container.innerHTML = ''; // Clear previous results
+
+                    // Prepare data for a detailed bar chart of sentiments
+                    const trackNames = data.track_sentiments.map(track => track.track_name);
+                    const sentimentScores = data.track_sentiments.map(track => track.sentiment);
+
+                    const sentimentData = [{
+                        x: trackNames,
+                        y: sentimentScores,
+                        type: 'bar',
+                        marker: {
+                            color: sentimentScores,
+                            colorscale: 'RdBu',
+                            showscale: true
+                        }
+                    }];
+
+                    const layout = {
+                        title: 'Track Sentiment Analysis',
+                        height: 400,
+                        width: 500,
+                        xaxis: {
+                            title: 'Tracks',
+                            tickangle: -45
+                        },
+                        yaxis: {
+                            title: 'Sentiment Score'
+                        },
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        font: {
+                            color: '#e0e0e0',
+                            family: 'Roboto, sans-serif'
+                        }
+                    };
+
+                    Plotly.newPlot('sentimentResult', sentimentData, layout);
+                }
+
+                // Function to call when the button is clicked
+                function fetchAndDisplaySentiment() {
+                    const playlistId = document.getElementById('playlistSelect').value;
+                    if (!playlistId) {
+                        alert('Please select a playlist first.');
+                        return;
+                    }
+
+                    // Show loading indication
+                    document.getElementById('sentimentResult').innerHTML = 'Loading...';
+
+                    fetch(`/analyze_playlist_sentiments/${playlistId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displaySentiment(data);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            document.getElementById('sentimentResult').innerHTML = 'An error occurred.';
+                        });
+                }
+                function fetchAndDisplayGenres() {
+                    const playlistId = document.getElementById('playlistSelect').value;
+                    if (!playlistId || playlistId === 'Select your playlist') {
+                        alert('Please select a playlist first.');
+                        return;
+                    }
+
+                    // Show loading indication
+                    document.getElementById('genreResult').innerHTML = 'Loading...';
+
+                    fetch(`/analyze_playlist_genres/${playlistId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            plotGenreDistribution(data.genre_counts);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            document.getElementById('genreResult').innerHTML = 'An error occurred.';
+                        });
+                }
+
+                function plotGenreDistribution(genreCounts) {
+                    const container = document.getElementById('genreResult');
+                    container.innerHTML = ''; // Clear previous results
+
+                    const genres = Object.keys(genreCounts);
+                    const counts = Object.values(genreCounts);
+
+                    const dataForPlotly = [{
+                        x: genres,
+                        y: counts,
+                        type: 'bar'
+                    }];
+
+                    const layout = {
+                        title: 'Genre Distribution in Playlist',
+                        xaxis: {
+                            title: 'Genres',
+                            tickangle: -45
+                        },
+                        yaxis: {
+                            title: 'Count'
+                        },
+                        margin: { t: 30, b: 150 },
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        font: {
+                            color: '#e0e0e0',
+                            family: 'Roboto, sans-serif'
+                        }
+                    };
+
+                    Plotly.newPlot('genreResult', dataForPlotly, layout);
+                }
+            </script>
+
+
+    </main>
+</body>
+
+</html>

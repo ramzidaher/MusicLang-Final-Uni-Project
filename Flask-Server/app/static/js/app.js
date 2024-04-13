@@ -2,15 +2,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectPlaylistButton = document.getElementById('selectPlaylistButton');
     const analyzePlaylistButton = document.getElementById('analyzePlaylist');
     const createPlaylistsButton = document.getElementById('createLanguagePlaylistsButton');
-    const playlistSelect = document.getElementById('playlistSelect');
     const creationLevelSelect = document.getElementById('creationLevelSelect');
     const tracksContainer = document.getElementById('tracksContainer');
-    const loadingOverlay = document.getElementById('loadingOverlay');
+    
 
     selectPlaylistButton.addEventListener('click', () => {
         const playlistId = playlistSelect.value;
         fetchTracks(playlistId);
     });
+
+
+
+
+    
 
     analyzePlaylistButton.addEventListener('click', () => {
         const playlistId = playlistSelect.value;

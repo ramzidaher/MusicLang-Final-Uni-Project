@@ -12,7 +12,13 @@ from .helpers import session_cache_path
 
 
 from flask import current_app
-
+from flask import request, jsonify, render_template
+import plotly.express as px
+import json
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+from collections import Counter
+import plotly
 main = Blueprint('main', __name__)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -26,7 +32,11 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 #Main Route
 @main.route('/')
 def index():
-    return render_template('index.html')
+    if 'user_id' in session:
+        return redirect(url_for('main.dashboard'))
+    else:
+        return render_template('index.html')
+
 
 
 @main.before_request
@@ -595,120 +605,6 @@ def get_lyrics():
 
 
 
-
-# @main.route('/analyze_playlist_languages/<playlist_id>')
-# def analyze_playlist_languages(playlist_id):
-#     if 'user_id' not in session:
-#         return jsonify({'error': 'User not signed in'}), 401
-
-#     user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
-#     if not user_oauth or not user_oauth.spotify_access_token:
-#         return jsonify({'error': 'Spotify connection is required.'}), 403
-
-#     spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
-#     try:
-#         tracks_data = spotify.playlist_tracks(playlist_id)
-#     except spotipy.exceptions.SpotifyException as e:
-#         return jsonify({'error': f'Spotify API error: {e}'}), 400
-
-#     # Aggregate language results from the lyrics
-#     language_totals = {}
-#     for item in tracks_data['items']:
-#         track = item['track']
-#         lyrics = fetch_lyrics(track['artists'][0]['name'], track['name'])
-#         if lyrics:
-#             language_results = aggregate_results_from_text(lyrics)
-#             for lang, percentage in language_results.items():
-#                 language_totals[lang] = language_totals.get(lang, 0) + percentage
-
-#     # Normalize and sort language results
-#     total_percentage = sum(language_totals.values())
-#     sorted_languages = sorted(
-#         ((lang, percent / total_percentage * 100) for lang, percent in language_totals.items()),
-#         key=lambda x: x[1],
-#         reverse=True
-#     )
-
-#     # Prepare data for different playlist levels
-#     return jsonify({
-#         'playlist_id': playlist_id,
-#         'languages': sorted_languages,
-#         'tracks_analyzed': len(tracks_data['items'])
-#     })
-
-
-
-# @main.route('/create_language_playlists/<playlist_id>', methods=['GET'])
-# def create_language_playlists(playlist_id):
-#     user_id = session.get('user_id')
-#     if not user_id:
-#         return jsonify({'error': 'User not signed in'}), 401
-
-#     user_oauth = UserOAuth.query.filter_by(user_id=user_id).first()
-#     if not user_oauth or not user_oauth.spotify_access_token:
-#         return jsonify({'error': 'Spotify connection is required.'}), 403
-
-#     oauth_manager = SpotifyOAuth(cache_path=session_cache_path(user_id))
-#     spotify = spotipy.Spotify(auth_manager=oauth_manager)
-
-#     # Token Refresh and Error Handling
-#     token_info = oauth_manager.get_cached_token()
-#     if oauth_manager.is_token_expired(token_info):
-#         token_info = oauth_manager.refresh_access_token(token_info['refresh_token'])
-#         spotify.auth = token_info['access_token']
-
-#     try:
-#         # Retrieve Spotify User ID
-#         spotify_user_id = spotify.current_user()['id']
-
-#         # Fetching the playlist's tracks
-#         tracks_data = spotify.playlist_tracks(playlist_id)
-        
-#         # Analyze languages and organize tracks
-#         tracks_by_language = {}
-#         language_threshold = 0.40  # 40% threshold for language detection
-#         for item in tracks_data['items']:
-#             track = item['track']
-#             track_name = track['name']
-#             artist_name = track['artists'][0]['name']
-#             lyrics = fetch_lyrics(artist_name, track_name)
-
-#             if lyrics:
-#                 language_results = aggregate_results_from_text(lyrics)
-#                 for language, percentage in language_results.items():
-#                     if percentage >= language_threshold:
-#                         if language not in tracks_by_language:
-#                             tracks_by_language[language] = []
-#                         tracks_by_language[language].append(track['uri'])
-
-#         # Create new playlists for each language and add tracks
-#         created_playlists = {}
-#         for language, track_uris in tracks_by_language.items():
-#             playlist_name = f"{language.capitalize()} Songs"
-#             new_playlist = spotify.user_playlist_create(spotify_user_id, playlist_name)
-#             spotify.playlist_add_items(new_playlist['id'], track_uris)
-#             created_playlists[language] = new_playlist['id']
-
-#         return jsonify({'message': 'Playlists created successfully', 'playlists': created_playlists})
-
-#     except spotipy.SpotifyException as e:
-#         if e.http_status == 401:
-#             # Redirect to re-authentication
-#             return redirect(url_for('reauthenticate_spotify'))
-#         elif e.http_status == 403:
-#             # Handle insufficient scope
-#             flash('Insufficient permissions to access Spotify data')
-#             return redirect(url_for('main.dashboard'))
-#         else:
-#             # General error handling
-#             flash('An error occurred while accessing Spotify')
-#             return redirect(url_for('main.dashboard'))
-
-
-
-
-
-
 # Add this route to your Flask application
 @main.route('/reauthenticate_spotify')
 def reauthenticate_spotify():
@@ -1000,3 +896,209 @@ def create_playlist_from_liked_songs():
         spotify.playlist_add_items(new_playlist['id'], track_uris[i:i+100])
 
     return jsonify({'message': 'Playlist created successfully', 'playlist_id': new_playlist['id']})
+
+
+
+
+@main.route('/playlist_analysis')
+def playlist_analysis():
+    if 'user_id' not in session:
+        flash("You need to log in to access this feature.")
+        return redirect(url_for('main.signin'))
+    
+    user_id = session['user_id']
+    user_oauth = UserOAuth.query.filter_by(user_id=user_id).first()
+    
+    if user_oauth and user_oauth.spotify_access_token:
+        spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(user_id)))
+        playlists = spotify.current_user_playlists(limit=50)
+        playlists = [{'name': playlist['name'], 'id': playlist['id']} for playlist in playlists['items']]
+    else:
+        flash("Please connect your Spotify account.")
+        return redirect(url_for('main.connect_spotify'))
+    
+    return render_template('playlist_analysis.html', playlists=playlists, user=g.user)
+
+
+from textblob import TextBlob
+
+@main.route('/analyze_playlist_languagess/<playlist_id>')
+def analyze_playlist_languagess(playlist_id):
+    # Authenticate with Spotify
+    if 'user_id' not in session:
+        return jsonify({'error': 'User not signed in'}), 401
+
+    user_oauth = SpotifyOAuth(cache_path=session_cache_path(session['user_id']))
+    spotify = spotipy.Spotify(auth_manager=user_oauth)
+
+    # Initialize data structures
+    track_sentiments = []
+    genre_counter = Counter()
+    popularity_scores = []
+
+    # Process tracks
+    try:
+        results = spotify.playlist_tracks(playlist_id, limit=100)
+        while results:
+            for item in results['items']:
+                track = item['track']
+                # Sentiment Analysis
+                lyrics = fetch_lyrics(track['artists'][0]['name'], track['name'])
+                if lyrics:
+                    blob = TextBlob(lyrics)
+                    track_sentiments.append(blob.sentiment.polarity)
+                
+                # Genre Data Collection
+                for artist in track['artists']:
+                    artist_info = spotify.artist(artist['id'])
+                    for genre in artist_info['genres']:
+                        genre_counter[genre] += 1
+                
+                # Popularity Metric
+                popularity_scores.append(track['popularity'])
+
+            if results['next']:
+                results = spotify.next(results)
+            else:
+                results = None
+    except spotipy.exceptions.SpotifyException as e:
+        return jsonify({'error': f'Spotify API error: {e}'}), 400
+
+    # Prepare response data
+    average_sentiment = sum(track_sentiments) / len(track_sentiments) if track_sentiments else 0
+    average_popularity = sum(popularity_scores) / len(popularity_scores) if popularity_scores else 0
+
+    response = {
+        'average_sentiment': average_sentiment,
+        'genres': genre_counter.most_common(),
+        'average_popularity': average_popularity
+    }
+
+
+from textblob import TextBlob
+
+def analyze_sentiments(lyrics):
+    blob = TextBlob(lyrics)
+    return blob.sentiment.polarity  # Returns a polarity score between -1 and 1
+
+
+from flask import jsonify
+from textblob import TextBlob
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+from .utils import fetch_lyrics, session_cache_path
+
+@main.route('/analyze_playlist_sentiments/<playlist_id>')
+def analyze_playlist_sentiments(playlist_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'User not signed in'}), 401
+
+    user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
+    if not user_oauth or not user_oauth.spotify_access_token:
+        return jsonify({'error': 'Spotify connection is required.'}), 403
+
+    spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
+
+    # Fetch the tracks in the playlist
+    try:
+        results = spotify.playlist_tracks(playlist_id, limit=100)
+        track_sentiments = []
+        for item in results['items']:
+            track = item['track']
+            track_name = track['name']
+            lyrics = fetch_lyrics(track['artists'][0]['name'], track_name)
+            if lyrics:
+                blob = TextBlob(lyrics)
+                sentiment_score = blob.sentiment.polarity
+                track_sentiments.append({
+                    'track_name': track_name,
+                    'sentiment': sentiment_score
+                })
+
+        if track_sentiments:
+            average_sentiment = sum([d['sentiment'] for d in track_sentiments]) / len(track_sentiments)
+        else:
+            average_sentiment = 0
+
+        return jsonify({
+            'average_sentiment': average_sentiment,
+            'track_sentiments': track_sentiments
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+
+@main.route('/analyze_playlist_genres_and_sentiments/<playlist_id>')
+def analyze_playlist_genres_and_sentiments(playlist_id):
+    # ... existing setup code ...
+    if 'user_id' not in session:
+        return jsonify({'error': 'User not signed in'}), 401
+
+    user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
+    if not user_oauth or not user_oauth.spotify_access_token:
+        return jsonify({'error': 'Spotify connection is required.'}), 403
+
+    spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
+    try:
+        results = spotify.playlist_tracks(playlist_id, limit=100)
+        track_details = []
+        for item in results['items']:
+            track = item['track']
+            track_name = track['name']
+            artists = track['artists']
+            genres = set()
+            for artist in artists:
+                artist_data = spotify.artist(artist['id'])
+                genres.update(artist_data.get('genres', []))
+            lyrics = fetch_lyrics(track['artists'][0]['name'], track_name)
+            sentiment_score = None
+            if lyrics:
+                blob = TextBlob(lyrics)
+                sentiment_score = blob.sentiment.polarity
+            
+            track_details.append({
+                'track_name': track_name,
+                'sentiment': sentiment_score,
+                'genres': list(genres)  # Convert the set to a list for JSON serialization
+            })
+        
+        # Calculating the average sentiment
+        sentiments = [detail['sentiment'] for detail in track_details if detail['sentiment'] is not None]
+        average_sentiment = sum(sentiments) / len(sentiments) if sentiments else 0
+
+        return jsonify({
+            'average_sentiment': average_sentiment,
+            'tracks': track_details
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@main.route('/analyze_playlist_genres/<playlist_id>')
+def analyze_playlist_genres(playlist_id):
+    # ... existing setup code ...
+    if 'user_id' not in session:
+        return jsonify({'error': 'User not signed in'}), 401
+
+    user_oauth = UserOAuth.query.filter_by(user_id=session['user_id']).first()
+    if not user_oauth or not user_oauth.spotify_access_token:
+        return jsonify({'error': 'Spotify connection is required.'}), 403
+
+    spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(cache_path=session_cache_path(session['user_id'])))
+
+    try:
+        results = spotify.playlist_tracks(playlist_id, limit=100)
+        genre_counts = {}
+        for item in results['items']:
+            track = item['track']
+            artists = track['artists']
+            for artist in artists:
+                artist_data = spotify.artist(artist['id'])
+                for genre in artist_data.get('genres', []):
+                    genre_counts[genre] = genre_counts.get(genre, 0) + 1
+        
+        return jsonify({'genre_counts': genre_counts})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
