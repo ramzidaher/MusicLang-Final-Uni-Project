@@ -10,77 +10,6 @@
     <link rel="stylesheet" href="/static/css/style.css">
 
     <style>
-        /* body,
-        html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Roboto', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            line-height: 1.6;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 2%;
-            background-color: #121212;
-        }
-
-        .logo img {
-            height: 80px;
-            transition: transform 0.3s ease;
-        }
-
-        .logo img:hover {
-            transform: scale(1.05);
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            margin: 0;
-        }
-
-        nav ul li {
-            margin-left: 25px;
-            padding: 5px 0;
-        }
-
-        nav ul li a {
-            color: #e0e0e0;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-            font-size: 18px;
-            font-family: 'Futura LT', sans-serif;
-
-        }
-
-        nav ul li a:hover {
-            color: #ff5722;
-            padding-bottom: 2px;
-        }
-
-        .profile-img {
-            border-radius: 50%;
-            height: 40px;
-            transition: transform 0.3s ease;
-        }
-
-        .profile-img:hover {
-            transform: scale(1.1);
-        } */
         .step-container {
             display: flex;
             justify-content: space-around;
@@ -296,7 +225,9 @@
 <body>
     <header>
         <div class="logo">
-            <img src="/static/images/logo2.png" alt="MusicLang Logo">
+            <a href="/">
+                <img src="/static/images/logo2.png" alt="MusicLang Logo">
+            </a>
         </div>
         <nav>
             <img src="{{ user.profile_image_url if user.profile_image_url else '/static/images/istockphoto-1495088043-612x612.jpg' }}"

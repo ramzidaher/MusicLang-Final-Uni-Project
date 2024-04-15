@@ -1,3 +1,4 @@
+# utils.py
 import fasttext
 from flask import flash, redirect, render_template, session, url_for
 import pycountry
@@ -107,49 +108,7 @@ def get_playlist_count(spotify):
 
     return total_playlists_created_by_user
 
-def get_playlist_tracks_with_lyrics(user_id, playlist_id):
-    user_oauth = UserOAuth.query.filter_by(user_id=user_id).first()
-    if not user_oauth or not user_oauth.spotify_access_token:
-        flash('Spotify connection is required.', 'info')
-        return redirect(url_for('main.dashboard'))
 
-    oauth_manager = SpotifyOAuth(cache_path=session_cache_path(user_id))
-    spotify = spotipy.Spotify(auth_manager=oauth_manager)
-
-    try:
-        tracks = []
-        if playlist_id == 'saved_tracks':
-            # Fetch liked songs with pagination
-            results = spotify.current_user_saved_tracks()
-            while results:
-                tracks.extend([{
-                    'name': item['track']['name'],
-                    'artist': item['track']['artists'][0]['name'],
-                    'lyrics_url': "Dummy Lyrics URL"  # Implement actual lyrics fetching here
-                } for item in results['items'] if item['track']])
-                if results['next']:
-                    results = spotify.next(results)
-                else:
-                    results = None
-        else:
-            # Fetch tracks from a regular playlist
-            results = spotify.playlist_tracks(playlist_id)
-            while results:
-                tracks.extend([{
-                    'name': item['track']['name'],
-                    'artist': item['track']['artists'][0]['name'],
-                    'lyrics_url': "Dummy Lyrics URL"  # Implement actual lyrics fetching here
-                } for item in results['items'] if item['track']])
-                if results['next']:
-                    results = spotify.next(results)
-                else:
-                    results = None
-
-        return render_template('feature_analyze.html', tracks=tracks, playlist_id=playlist_id)
-
-    except spotipy.exceptions.SpotifyException as e:
-        flash(f'Error fetching tracks: {e}', 'error')
-        return redirect(url_for('main.dashboard'))
 
 
 
@@ -294,3 +253,28 @@ def get_language_name(iso_code):
     if language is not None:
         return language.name
     return iso_code
+
+
+def batch_add_tracks(spotify, playlist_id, track_uris):
+    """
+    Add tracks to a playlist in batches.
+
+    This function adds tracks to a playlist in batches to overcome the limitation
+    of maximum tracks per request in the Spotify API.
+
+    Args:
+        spotify: An instance of the spotipy.Spotify class.
+        playlist_id (str): The ID of the Spotify playlist to add tracks to.
+        track_uris (list): A list of Spotify track URIs to add to the playlist.
+
+    Returns:
+        None
+    """
+    max_tracks_per_request = 100
+    for i in range(0, len(track_uris), max_tracks_per_request):
+        batch_uris = track_uris[i:i + max_tracks_per_request]
+        try:
+            response = spotify.playlist_add_items(playlist_id, batch_uris)
+            print(f"Added {len(batch_uris)} tracks to playlist {playlist_id}: {response}")
+        except Exception as e:
+            print(f"Error adding tracks to playlist {playlist_id}: {e}")

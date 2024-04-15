@@ -1,0 +1,89 @@
+o90<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicLang - Playlist Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="/static/images/logo2.png" alt="MusicLang Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="step-container">
+            <!-- Merge Playlists -->
+            <div class="step">
+                <h2>Merge Playlists</h2>
+                <select id="mergePlaylistSelect" multiple size="3">
+                    <!-- Dynamically populate this list with playlists -->
+                    <option value="playlist_id1">Playlist 1</option>
+                    <option value="playlist_id2">Playlist 2</option>
+                    <option value="playlist_id3">Playlist 3</option>
+                </select>z
+                <button onclick="mergePlaylists()">Merge Selected Playlists</button>
+            </div>
+
+            <!-- Create Throwback Playlist -->
+            <div class="step">
+                <h2>Create Throwback Playlist</h2>
+                <button onclick="createThrowbackPlaylist()">Generate Throwback Playlist</button>
+            </div>
+
+            <!-- Smart Cleanup -->
+            <div class="step">
+                <h2>Smart Cleanup</h2>
+                <select id="cleanupPlaylistSelect">
+                    <!-- Dynamically populate this list with playlists -->
+                    <option value="playlist_id1">Playlist 1</option>
+                    <option value="playlist_id2">Playlist 2</option>
+                    <option value="playlist_id3">Playlist 3</option>
+                </select>
+                <button onclick="cleanupPlaylist()">Cleanup Selected Playlist</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function mergePlaylists() {
+            var selectedPlaylists = Array.from(document.getElementById('mergePlaylistSelect').selectedOptions).map(option => option.value);
+            fetch('/merge_playlists', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+            .catch(error => console.error('Error:', error));
+        }
+
+        function createThrowbackPlaylist() {
+            fetch('/create_throwback_playlist')
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+
+        function cleanupPlaylist() {
+            var playlistId = document.getElementById('cleanupPlaylistSelect').value;
+            fetch('/smart_cleanup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ playlist_id: playlistId })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
