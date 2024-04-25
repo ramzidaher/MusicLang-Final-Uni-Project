@@ -16,12 +16,14 @@
 </head>
 
 <style>
-    .hero-section .btn:hover, .hero-section .btn:focus {
-    background-color: #ffa726; /* Lighter orange */
-    color: #FFF;
-    border-color: #ffa726; /* Ensure the border color also changes */
-}
-
+    .hero-section .btn:hover,
+    .hero-section .btn:focus {
+        background-color: #ffa726;
+        /* Lighter orange */
+        color: #FFF;
+        border-color: #ffa726;
+        /* Ensure the border color also changes */
+    }
 </style>
 
 <body>
@@ -77,21 +79,25 @@
                     <div class="col-md-4 mb-4">
                         <i class="fas fa-music fa-3x"></i>
                         <h3>Spotify and YoutubeMusic Integration</h3>
-                        <p>Currently we support the integration of Spotify and YoutubeMusic, with many more music platforms to come.</p>
+                        <p>Currently we support the integration of Spotify and YoutubeMusic, with many more music
+                            platforms to come.</p>
                     </div>
 
                     <div class="col-md-4 mb-4">
                         <i class="fas fa-rocket fa-3x"></i>
                         <h3>Quick and Easy</h3>
-                        <p>It's super easy to use, just a couple of steps and you're done! Our user-friendly interface ensures that you can navigate through our platform effortlessly, saving you time and hassle.</p>
+                        <p>It's super easy to use, just a couple of steps and you're done! Our user-friendly interface
+                            ensures that you can navigate through our platform effortlessly, saving you time and hassle.
+                        </p>
                     </div>
-                    
+
                     <div class="col-md-4 mb-4">
                         <i class="fas fa-hand-holding-usd fa-3x"></i>
                         <h3>FREE</h3>
-                        <p>All of our services are currently free to use! We believe that everyone should have access to the tools and resources they need without worrying about costs.</p>
+                        <p>All of our services are currently free to use! We believe that everyone should have access to
+                            the tools and resources they need without worrying about costs.</p>
                     </div>
-            </div>
+                </div>
     </section>
     <!-- Features Section -->
     <section id="features" class="container text-center py-5">
@@ -100,58 +106,55 @@
         <div class="row feature-container">
             <div class="col-md-4 feature-box feature-box-1">
                 <h3>Seamless Integration</h3>
-                <p>Effortlessly connect with Spotify and YouTube Music to start your journey through song lyrics in any language.</p>
+                <p>Effortlessly connect with Spotify and YouTube Music to start your journey through song lyrics in any
+                    language.</p>
                 <a href="/dashboard">Learn More</a>
             </div>
             <div class="col-md-4 feature-box feature-box-2">
                 <h3>Lyrics Analysis</h3>
-                <p>Our mBERT-powered analysis peels back the layers of language, offering insights into the cultural tapestry of music.</p>
+                <p>Our mBERT-powered analysis peels back the layers of language, offering insights into the cultural
+                    tapestry of music.</p>
                 <a href="/dashboard">Learn More</a>
             </div>
             <div class="col-md-4 feature-box feature-box-3">
                 <h3>Statistics Display</h3>
-                <p>Delve into insightful statistics presented in a user-friendly manner, providing a comprehensive overview of music's linguistic landscape.</p>
+                <p>Delve into insightful statistics presented in a user-friendly manner, providing a comprehensive
+                    overview of music's linguistic landscape.</p>
                 <a href="/dashboard">Learn More</a>
             </div>
             <div class="col-md-4 feature-box feature-box-3">
                 <h3>Playlist Creation and Splitting</h3>
-                <p>Experience a seamless journey through music's linguistic landscape as you effortlessly create and organize playlists to suit your mood and taste.</p>
+                <p>Experience a seamless journey through music's linguistic landscape as you effortlessly create and
+                    organize playlists to suit your mood and taste.</p>
                 <a href="/dashboard">Learn More</a>
             </div>
         </div>
     </section>
-    
 
-    <!-- Sign In / Register Modal -->
-    <div class="modal fade" id="signinModal" tabindex="-1" aria-labelledby="signinModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="signinModalLabel">Sign In / Register</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Your sign in / register form goes here -->
-                    <!-- Example form fields -->
-                    <form>
-                        <div class="form-group">
-                            <label for="email">Email address</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter email">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Password">
-                        </div>
-                        <!-- Add more fields as needed -->
-                        <button type="submit" class="btn btn-primary">Sign In</button>
-                    </form>
-                    <!-- End of sign in / register form -->
-                </div>
+
+<!-- Sign In / Register Modal -->
+<div class="modal fade" id="signinModal" tabindex="-1" aria-labelledby="signinModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signinModalLabel">Welcome to MusicLang</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>If you already have an account, please log in to continue.</p>
+                <!-- Button to trigger login form -->
+                <a href="/signin" class="btn btn-primary mb-2">Log In</a>
+                <p>If you're new here, we'd love to have you join our community!</p>
+                <!-- Button to go to registration page -->
+                <a href="/register" class="btn btn-secondary">Register</a>
             </div>
         </div>
     </div>
+</div>
+
+
     <!-- Contact Section -->
     <section id="contact" class="text-center py-5">
         <div class="container">
@@ -180,6 +183,77 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<!-- Load only one version of jQuery and ensure it's the full version, not the 'slim' one which lacks AJAX support -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    }
+
+    function isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top < window.innerHeight && // Checks if the top of the element is within the viewport
+            rect.bottom >= 0 // Checks if the bottom of the element is above the viewport bottom
+        );
+    }
+
+    var lastInvocationTime = 0;
+    const modalCooldown = 30000;
+
+    var checkAndShowModal = debounce(function() {
+        var featuresSection = document.getElementById('features');
+        var currentTime = new Date().getTime();
+
+        if (isInViewport(featuresSection) && (currentTime - lastInvocationTime > modalCooldown)) {
+            $('#signinModal').modal('show');
+            lastInvocationTime = currentTime;
+        }
+    }, 100);
+
+    $(window).on('scroll', checkAndShowModal);
+
+    // Handle the form submission via AJAX
+    $('#signinModal form').on('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        var formData = $(this).serialize(); // Serialize the form data
+
+        $.ajax({
+            type: "POST",
+            url: "/signin",
+            data: formData,
+            success: function(response) {
+                // Assuming the response contains a redirection URL
+                window.location.href = response.redirect || '/dashboard';
+            },
+            error: function(xhr) {
+                // Optionally, display a more informative error message
+                var errorMsg = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Invalid login credentials. Please try again.';
+                alert(errorMsg);
+            }
+        });
+    });
+});
+</script>
+
+
+    
+
 </body>
 
 </html>

@@ -22,9 +22,7 @@ def predict_languages_for_line(line, threshold=0.01):
     Args:
         line (str): The input text line.
         threshold (float): The minimum percentage to consider for inclusion.
-
-    Returns:
-        dict: A dictionary with language names as keys and their percentages as values.
+1
     """
     predictions = model.predict(line, k=-1)
     languages, probabilities = predictions
@@ -33,7 +31,7 @@ def predict_languages_for_line(line, threshold=0.01):
     results = {}
     for lang, prob in zip(languages, probabilities):
         percentage = (prob / total_prob) * 100
-        if percentage >= threshold:
+        if percentage >= threshold: 
             lang_code = lang.replace('__label__', '')
             lang_name = get_language_name(lang_code)
             results[lang_name] = percentage

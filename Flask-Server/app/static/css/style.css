@@ -46,14 +46,11 @@ a::after {
 /* Hover effect for underline */
 a:hover::after {
     width: 0; /* Make the underline disappear on hover */
-    color: #FF5722; /* Text color */
     text-decoration: none; /* Remove default underline */
 }
 
 /* Override default browser underline for visited links */
-a:visited {
-    color: #FF5722; /* Text color for visited links */
-}
+
 
 
 .hero-section {
@@ -625,29 +622,63 @@ nav ul li a:hover {
 
 
 /* Style for the dropdown menu */
-.nav-item .dropdown-menu {
-    display: none; /* Hide by default */
-    position: absolute; /* Position it relative to the parent item */
-    background-color: #333; /* Dark background for the dropdown */
-    min-width: 160px; /* Minimum width */
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-    z-index: 1; /* Ensure it's on top of other elements */
+
+
+/* Modal Custom Styles */
+.modal-content {
+    background-color: #333; /* Dark background for the modal content */
+    color: #FFF; /* White text color for readability */
+    border-radius: 8px; /* Rounded corners for the modal */
 }
 
-/* Show the dropdown menu on parent hover */
-.nav-item:hover .dropdown-menu {
-    display: block; /* Show on hover */
+.modal-header, .modal-body, .modal-footer {
+    border-bottom: 1px solid #444; /* Subtle border for modal sections */
 }
 
-/* Style for links inside the dropdown */
-.nav-item .dropdown-menu a {
-    color: #E0E0E0; /* Light color for text */
-    padding: 12px 16px; /* Padding for spacing */
-    text-decoration: none; /* No underline */
-    display: block; /* Display as block for width */
+.modal-header {
+    border-bottom: none; /* Remove border bottom from header */
 }
 
-/* Change background on dropdown item hover */
-.nav-item .dropdown-menu a:hover {
-    background-color: #505050; /* Slightly darker on hover */
+.modal-title {
+    color: #FF5722; /* Accent color for the modal title */
+}
+
+.close {
+    color: #FFF; /* White color for close button */
+    opacity: 0.5; /* Reduced opacity for subtlety */
+}
+
+.close:hover {
+    opacity: 1; /* Full opacity on hover for better interaction */
+}
+
+/* Custom styles for modal inputs */
+.modal-body form {
+    margin-top: 15px; /* Spacing for form */
+}
+
+.modal-body .form-group label {
+    color: #ccc; /* Lighter text color for labels */
+}
+
+.modal-body .form-control {
+    background-color: #222; /* Darker background for input fields */
+    border: 1px solid #555; /* Subtle border for inputs */
+    color: #FFF; /* White text for input */
+}
+
+.modal-body .form-control:focus {
+    background-color: #333; /* Slightly lighter background on focus */
+    border-color: #FF5722; /* Accent color border on focus */
+}
+
+/* Custom button styles in the modal */
+.modal-footer .btn-primary {
+    background-color: #FF5722; /* Accent background color */
+    border-color: #FF5722; /* Border color to match */
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #e64a19; /* Darker shade on hover */
+    border-color: #e64a19; /* Border color to match on hover */
 }

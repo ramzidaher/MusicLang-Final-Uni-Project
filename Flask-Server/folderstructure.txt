@@ -1,0 +1,44 @@
+FLASK-SERVER/
+│
+├── app/
+│   ├── static/
+│   │   ├── css/
+│   │   ├── images/
+│   │   └── js/
+│   │       └── app.js
+│   │
+│   ├── templates/
+│   │   ├── dashboard.html
+│   │   ├── feature_analyze.html
+│   │   ├── index.html
+│   │   ├── playlist_analysis.html
+│   │   ├── playlist_mangment.html
+│   │   ├── register.html
+│   │   ├── signin.html
+│   │   └── spotify_insights.html
+│   │
+│   ├── __init__.py
+│   ├── forms.py
+│   ├── helpers.py
+│   ├── models.py
+│   ├── routes.py
+│   └── utils.py
+│
+├── instance/
+│   └── Language-Identification-in-songs_TEST/
+│
+├── tests/
+├── .cache-1
+├── .cache-2
+├── .cache-3
+├── .env
+├── logo.png.H6PlVl
+├── config.py
+├── lid.176.bin
+├── login.css
+├── lyrics.py
+├── lyricsgrabber.py
+├── mani.py
+├── musiclang.db
+├── requirements.txt
+└── run.py
