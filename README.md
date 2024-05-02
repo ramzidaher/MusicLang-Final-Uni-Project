@@ -73,9 +73,3 @@ Contributions are what make the open-source community such an amazing place to l
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-## Contact
-
-Your Name - example@email.com
-
-Project Link: [https://github.com/yourgithub/musiclang](https://github.com/yourgithub/musiclang)
