@@ -1203,3 +1203,8 @@ def delete_test_playlists():
         return redirect(url_for('main.dashboard'))
 
     return redirect(url_for('main.dashboard'))
+
+
+@main.route('/playlists')
+def feature_under_development():
+    return render_template('feature_under_development.html')
