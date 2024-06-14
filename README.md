@@ -46,6 +46,7 @@ MusicLang is a web application developed as a final year university project. It 
    SPOTIPY_CLIENT_ID='your-spotify-client-id'
    SPOTIPY_CLIENT_SECRET='your-spotify-client-secret'
    SPOTIPY_REDIRECT_URI='your-spotify-redirect-uri'
+   GENIUS_ACCESS_TOKEN = 'your-genius-access-token'
    ```
 
 5. **Run the application**:
