@@ -2,7 +2,7 @@
 
 ## Overview
 
-MusicLang is a web application developed as a final year university project. It is designed to analyze and categorize song lyrics in various languages, providing insights into cultural and linguistic diversity. Built with Flask, this tool leverages advanced machine learning models to offer detailed analysis and insights into the lyrics of your favorite songs.
+MusicLang is a web application developed as a final year university project. It is designed to analyze and categorize song lyrics in various languages, providing insights into cultural and linguistic diversity. Built with Flask, this tool leverages Fasttext to offer detailed analysis and insights into the lyrics of your favorite songs.
 
 ## Features
 
