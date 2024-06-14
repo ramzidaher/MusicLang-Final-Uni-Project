@@ -16,7 +16,6 @@
             align-items: stretch;
             flex-wrap: wrap;
             margin: -10px;
-            /* Compensate for the padding */
         }
 
         .step {
@@ -31,29 +30,23 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin: 10px;
             flex: 1 0 calc(33.333% - 20px);
-            /* Adjust basis to account for margin */
             min-height: 250px;
-            /* Set based on the tallest step */
         }
 
         @media (max-width: 1200px) {
             .step {
                 flex: 1 0 calc(50% - 20px);
-                /* Half width for medium screens */
             }
         }
 
         @media (max-width: 768px) {
             .step-container {
                 justify-content: center;
-                /* Center on small screens */
                 flex-wrap: wrap;
-                /* Allow wrapping on small screens */
             }
 
             .step {
                 flex: 1 0 90%;
-                /* Full width on smaller screens */
             }
         }
 
@@ -111,29 +104,20 @@
             justify-content: center;
             align-items: center;
             min-height: calc(100vh - 80px);
-            /* Adjust 80px to the height of your header */
             flex-direction: column;
-            /* This ensures that content in <main> is centered and aligned in order */
         }
 
         .tracks-container {
             width: 90%;
-            /* Optional: define a specific width for the container */
             max-width: 600px;
-            /* Optional: prevent the container from getting too wide on large screens */
         }
 
-        /* Container for the language distribution, making it a flex column */
         .languages {
             display: flex;
             flex-direction: row;
-            /* Align children horizontally */
             flex-wrap: wrap;
-            /* If there are many items, they will wrap to the next line */
             justify-content: center;
-            /* Center children horizontally in the container */
             align-items: center;
-            /* Center children vertically in the container */
             width: 100%;
         }
 
@@ -144,15 +128,10 @@
             border-radius: 5px;
             font-size: 14px;
             margin: 5px;
-            /* Adjust margin for spacing around each item */
             text-align: center;
             box-sizing: border-box;
-            /* Ensures padding is included in the width */
-            /* You can add max-width or flex-basis to control the width of each language item */
             flex: 1;
-            /* This will make each .language span take up equal space */
             min-width: 100px;
-            /* Prevents the items from being too narrow */
         }
 
 
@@ -172,28 +151,22 @@
         .centered-heading {
             text-align: center;
             width: 100%;
-            /* Ensure full width for alignment */
         }
 
 
         .tracks-container ul li,
         .languages span {
-            /* existing styles */
             text-align: center;
-            /* This will center-align the text within the list items and spans */
         }
 
         .loading-overlay {
             position: fixed;
-            /* Full-screen */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.75);
-            /* Black background with opacity */
             z-index: 1000;
-            /* Ensure it's on top */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -201,9 +174,7 @@
 
         .loading-spinner {
             border: 5px solid #f3f3f3;
-            /* Light grey */
             border-top: 5px solid #3498db;
-            /* Blue */
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -220,7 +191,6 @@
             }
         }
 
-        /* Style for the navigation links */
         nav ul {
             list-style: none;
             padding: 0;
@@ -239,7 +209,6 @@
             text-decoration: none;
         }
 
-        /* Hide the dropdown links */
         .dropdown-content {
             display: none;
             position: absolute;
@@ -255,12 +224,10 @@
             display: block;
         }
 
-        /* Show the dropdown menu on hover */
         .dropdown:hover .dropdown-content {
             display: block;
         }
 
-        /* Optional: adds a hover effect to dropdown items */
         .dropdown-content a:hover {
             background-color: #555;
         }

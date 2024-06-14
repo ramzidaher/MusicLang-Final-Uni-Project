@@ -19,6 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 - Python 3.8 or higher
 - Pipenv for dependency management
+- Install lib.175.bin https://fasttext.cc/docs/en/language-identification.html
 
 ### Installation
 
@@ -33,16 +34,19 @@ These instructions will get you a copy of the project up and running on your loc
 3. Install dependencies:
    ```
    pipenv install
-   ```
 4. Activate the virtual environment:
    ```
    pipenv shell
    ```
-5. Set environment variables:
+5. Set environment variables. You'll need to create a `.env` file in the root directory of your project and add the following keys:
    ```
-   export FLASK_APP=run.py
-   export FLASK_ENV=development
+   SPOTIPY_CLIENT_ID=your_spotify_client_id
+   SPOTIPY_CLIENT_SECRET=your_spotify_client_secret
+   SPOTIPY_REDIRECT_URI=http://127.0.0.1:5000/spotify_callback
+   SECRET_KEY=your_secret_key
+   GENIUS_ACCESS_TOKEN='your_genius_access_token'
    ```
+   Replace the placeholder values with your actual data.
 6. Initialize the database:
    ```
    flask db upgrade
@@ -69,9 +73,3 @@ Contributions are what make the open-source community such an amazing place to l
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-## Contact
-
-Your Name - example@email.com
-
-Project Link: [https://github.com/yourgithub/musiclang](https://github.com/yourgithub/musiclang)

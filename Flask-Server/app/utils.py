@@ -13,7 +13,8 @@ from lyricsgenius import Genius
 
 
 
-model_path = 'lid.176.bin'
+model_path = '/home/ramzi/Desktop/Final-Uni-Project/Flask-Server/app/lid.176.bin'
+print("Loading model from:", model_path)
 
 model = fasttext.load_model(model_path)
 

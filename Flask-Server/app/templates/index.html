@@ -19,10 +19,8 @@
     .hero-section .btn:hover,
     .hero-section .btn:focus {
         background-color: #ffa726;
-        /* Lighter orange */
         color: #FFF;
         border-color: #ffa726;
-        /* Ensure the border color also changes */
     }
 </style>
 
@@ -230,19 +228,17 @@ $(document).ready(function() {
 
     // Handle the form submission via AJAX
     $('#signinModal form').on('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-        var formData = $(this).serialize(); // Serialize the form data
+        event.preventDefault(); 
+        var formData = $(this).serialize(); 
 
         $.ajax({
             type: "POST",
             url: "/signin",
             data: formData,
             success: function(response) {
-                // Assuming the response contains a redirection URL
                 window.location.href = response.redirect || '/dashboard';
             },
             error: function(xhr) {
-                // Optionally, display a more informative error message
                 var errorMsg = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Invalid login credentials. Please try again.';
                 alert(errorMsg);
             }
