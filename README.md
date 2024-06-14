@@ -1,4 +1,4 @@
-# MusicLang: Final Year University Project for Multilingual Lyrics Analysis
+# MusicLang: Multilingual Lyrics Analysis
 
 ## Overview
 
