@@ -1,4 +1,9 @@
 
 Flask-Server/lid.176.bin
 Flask-Server/app/lid.176.bin
-/Research
+# Ignore the research folder
+Research/
+
+# Ignore the report zip files
+Final Project Report.zip
+Final Project Report(3).zip
