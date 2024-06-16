@@ -1,8 +1,10 @@
+To help resolve conflicts in your README file, let's first identify potential areas where conflicts might arise, such as inconsistent instructions, missing details, or format issues. Here’s a revised and structured version to ensure clarity and consistency:
+
 # MusicLang: Multilingual Lyrics Analysis
 
 ## Overview
 
-MusicLang is a web application developed as a final year university project. It is designed to analyze and categorize song lyrics in various languages, providing insights into cultural and linguistic diversity. Built with Flask, this tool leverages Fasttext to offer detailed analysis and insights into the lyrics of your favorite songs.
+MusicLang is a web application developed as a final year university project. It is designed to analyze and categorize song lyrics in various languages, providing insights into cultural and linguistic diversity. Built with Flask, this tool leverages FastText to offer detailed analysis and insights into the lyrics of your favorite songs.
 
 ## Features
 
@@ -46,7 +48,7 @@ MusicLang is a web application developed as a final year university project. It 
    SPOTIPY_CLIENT_ID='your-spotify-client-id'
    SPOTIPY_CLIENT_SECRET='your-spotify-client-secret'
    SPOTIPY_REDIRECT_URI='your-spotify-redirect-uri'
-   GENIUS_ACCESS_TOKEN = 'your-genius-access-token'
+   GENIUS_ACCESS_TOKEN='your-genius-access-token'
    ```
 
 5. **Run the application**:
@@ -94,4 +96,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For any questions or feedback, please contact me
+For any questions or feedback, please contact me.
+
+By ensuring clear, consistent formatting and including all necessary details, you can minimize the likelihood of conflicts and make the README file more user-friendly. If there are specific conflicts or errors you encountered, please provide more details so I can offer targeted assistance.
