@@ -1,5 +1,3 @@
-To help resolve conflicts in your README file, let's first identify potential areas where conflicts might arise, such as inconsistent instructions, missing details, or format issues. Here’s a revised and structured version to ensure clarity and consistency:
-
 # MusicLang: Multilingual Lyrics Analysis
 
 ## Overview
