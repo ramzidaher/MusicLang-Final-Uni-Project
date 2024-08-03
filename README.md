@@ -72,20 +72,6 @@ MusicLang is a web application developed as a final year university project. It 
 3. **Lyrics Analysis**: The detected language helps tailor the analysis process, providing insights based on linguistic characteristics.
 4. **Categorization**: Songs are categorized into playlists based on the detected language, allowing users to explore their music library's linguistic diversity.
 
-## SEO Optimization
-
-MusicLang is designed to help users filter and categorize songs by languages. Whether you are looking to analyze multilingual song lyrics or categorize your music library by language, MusicLang offers a comprehensive solution.
-
-## Contributing
-
-Contributions are welcome! Please follow these steps to contribute:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -m 'Add new feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a Pull Request.
-
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
